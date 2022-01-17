@@ -1,0 +1,10 @@
+{
+  "name": "node-bff",
+  "private": true,
+  "scripts": {
+    "cms": "lerna run --parallel cms"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}
