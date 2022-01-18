@@ -1,11 +1,18 @@
 import React, { useEffect, useRef, useState, FC } from 'react';
 import { Col, Row, Modal, Card } from '@douyinfe/semi-ui';
-import { Graph } from '@antv/x6';
+import { Graph, Cell } from '@antv/x6';
 import { IconWifi, IconCode } from '@douyinfe/semi-icons';
 import useStateCallback from '@/hooks/useStateCallback';
 import { PostTools } from '../PostTools';
 import { CodeEditor } from '../CodeEditor';
-import { config, GraphHoc, portSync, nodeSync, plusSync } from './chartTools';
+import {
+  config,
+  GraphHoc,
+  portSync,
+  nodeSync,
+  plusSync,
+  eventSync,
+} from './chartTools';
 
 // 选择类型弹窗
 const ModelContent: FC<{
@@ -86,11 +93,28 @@ export const WorkFlow = () => {
   const [nodes, setNode] = useStateCallback([]);
   const [visible, setVisible] = useState<boolean>(false);
   const [viewControl, setViewControl] = useState<'handler' | 'fetch' | ''>('');
+  // 缓存全局视图实例
   const graph = useRef();
+  // 缓存当前选择节点
+  const selectNode = useRef();
 
   // 增加节点
-  function handleNodePlus(nodeType: string) {
-    console.log(nodeType, graph.current, '============');
+  function handleNodePlus(nodeType: 'handler' | 'fetch' | '') {
+    if (nodeType === 'fetch') {
+      console.log(
+        nodeType,
+        graph.current,
+        selectNode.current,
+        '======fetch======',
+      );
+      console.log(nodes, eventSync('6', 'fetch', 300, 110));
+      setNode([...nodes, ...[eventSync('6', 'fetch', 300, 110)]], (n: any) => {
+        (graph.current as unknown as Graph).fromJSON(n);
+      });
+    }
+    if (nodeType === 'handler') {
+      console.log(nodeType, graph.current, '======handler======');
+    }
   }
 
   // 初始化编辑器注入
@@ -111,8 +135,8 @@ export const WorkFlow = () => {
       if (_key === 'handler' || _key === 'fetch') {
         setViewControl(_key);
       } else {
-        //
         setVisible(!visible);
+        (selectNode.current as unknown as Cell) = cell;
       }
     });
 

@@ -135,6 +135,20 @@ export const plusSync = (id: string, x: number, y: number) => ({
   },
 });
 
+export const eventSync = (id: string, type: string, x: number, y: number) => ({
+  id,
+  shape: 'activity',
+  width: 50,
+  height: 50,
+  position: {
+    x,
+    y,
+  },
+  data: {
+    _key: type,
+  },
+});
+
 // 初始化节点位置
 export const nodes = (cw: number) => [
   nodeSync('1', '开始', cw / 2, 10),
@@ -151,6 +165,9 @@ export const config = {
   // 允许圈选
   selecting: {
     enabled: false,
+  },
+  interacting: {
+    nodeMovable: false,
   },
 };
 
