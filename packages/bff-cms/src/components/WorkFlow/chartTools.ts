@@ -1,4 +1,5 @@
 import { Graph } from '@antv/x6';
+import { nanoid } from 'nanoid';
 
 // 流程图节点样式
 // 起点 + 结束
@@ -97,16 +98,16 @@ Graph.registerEdge(
 );
 
 // 动态连接线
-export const portSync = (id: string, s: string, t: string) => ({
-  id,
+export const portSync = (s: string, t: string) => ({
+  id: nanoid(),
   shape: 'bpmn-edge',
   source: s,
   target: t,
 });
 
 // 开始 + 结束节点
-export const nodeSync = (id: string, t: string, x: number, y: number) => ({
-  id,
+export const nodeSync = (t: string) => ({
+  id: nanoid(),
   shape: 'event',
   width: 50,
   height: 50,
@@ -114,49 +115,30 @@ export const nodeSync = (id: string, t: string, x: number, y: number) => ({
   data: {
     _key: '',
   },
-  position: {
-    x,
-    y,
-  },
 });
 
 // 增加按钮
-export const plusSync = (id: string, x: number, y: number) => ({
-  id,
+export const plusSync = () => ({
+  id: nanoid(),
   shape: 'gateway',
   width: 50,
   height: 50,
-  position: {
-    x,
-    y,
-  },
   data: {
     _key: 'plus',
   },
 });
 
-export const eventSync = (id: string, type: string, x: number, y: number) => ({
-  id,
+// 事件节点
+export const eventSync = (type: string, label: string) => ({
+  id: nanoid(),
   shape: 'activity',
-  width: 50,
-  height: 50,
-  position: {
-    x,
-    y,
-  },
+  width: 100,
+  height: 60,
+  label,
   data: {
     _key: type,
   },
 });
-
-// 初始化节点位置
-export const nodes = (cw: number) => [
-  nodeSync('1', '开始', cw / 2, 10),
-  plusSync('2', cw / 2, 110),
-  portSync('3', '1', '2'),
-  nodeSync('4', '结束', cw / 2, 210),
-  portSync('5', '2', '4'),
-];
 
 // 流程图基础配置
 export const config = {

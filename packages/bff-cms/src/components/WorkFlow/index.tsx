@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, FC } from 'react';
 import { Col, Row, Modal, Card } from '@douyinfe/semi-ui';
 import { Graph, Cell } from '@antv/x6';
+import { DagreLayout } from '@antv/layout';
 import { IconWifi, IconCode } from '@douyinfe/semi-icons';
 import useStateCallback from '@/hooks/useStateCallback';
 import { PostTools } from '../PostTools';
@@ -90,27 +91,39 @@ const ModelContent: FC<{
 
 export const WorkFlow = () => {
   const editRef = useRef<HTMLDivElement>(null);
-  const [nodes, setNode] = useStateCallback([]);
+  const [points, setNode] = useStateCallback({});
   const [visible, setVisible] = useState<boolean>(false);
   const [viewControl, setViewControl] = useState<'handler' | 'fetch' | ''>('');
   // 缓存全局视图实例
   const graph = useRef();
   // 缓存当前选择节点
-  const selectNode = useRef();
+  const selectNode = useRef<Cell | undefined>();
+  // 使用层次布局
+  const dagreLayout = new DagreLayout({
+    type: 'dagre',
+    rankdir: 'LR',
+    align: 'UR',
+    ranksep: 30,
+    nodesep: 15,
+    controlPoints: true,
+  });
 
   // 增加节点
   function handleNodePlus(nodeType: 'handler' | 'fetch' | '') {
     if (nodeType === 'fetch') {
-      console.log(
-        nodeType,
-        graph.current,
-        selectNode.current,
-        '======fetch======',
+      const { data } = (selectNode.current as any).store;
+      const { id: preId } = data;
+      const next = eventSync('fetch', '待编辑');
+      setNode(
+        {
+          nodes: [...points.nodes, ...[next]],
+          edges: [...points.edges, ...[portSync(preId, next.id)]],
+        },
+        (n: any) => {
+          const model = dagreLayout.layout(n);
+          (graph.current as unknown as Graph).fromJSON(model);
+        },
       );
-      console.log(nodes, eventSync('6', 'fetch', 300, 110));
-      setNode([...nodes, ...[eventSync('6', 'fetch', 300, 110)]], (n: any) => {
-        (graph.current as unknown as Graph).fromJSON(n);
-      });
     }
     if (nodeType === 'handler') {
       console.log(nodeType, graph.current, '======handler======');
@@ -129,27 +142,34 @@ export const WorkFlow = () => {
       ...config,
     });
 
-    // 处理事件
-    (graph.current as unknown as Graph).on('cell:click', ({ cell }) => {
-      const { _key } = cell.data;
-      if (_key === 'handler' || _key === 'fetch') {
-        setViewControl(_key);
-      } else {
-        setVisible(!visible);
-        (selectNode.current as unknown as Cell) = cell;
-      }
-    });
+    // 定义事件方法
+    (graph.current as unknown as Graph).on(
+      'cell:click',
+      ({ cell }: { cell: Cell }) => {
+        const { _key } = cell.data;
+        if (_key === 'handler' || _key === 'fetch') {
+          setViewControl(_key);
+        } else {
+          setVisible(!visible);
+          (selectNode.current as unknown as Cell) = cell;
+        }
+      },
+    );
+
+    const start = nodeSync('开始');
+    const end = nodeSync('结束');
+    const plus = plusSync();
 
     // 初始化节点
     setNode(
-      () => [
-        nodeSync('1', '开始', width / 2, 10),
-        plusSync('2', width / 2, 110),
-        portSync('3', '1', '2'),
-        nodeSync('4', '结束', width / 2, 210),
-        portSync('5', '2', '4'),
-      ],
-      (n: any) => (graph.current as unknown as Graph).fromJSON(n),
+      {
+        nodes: [start, plus, end],
+        edges: [portSync(start.id, plus.id), portSync(plus.id, end.id)],
+      },
+      (n: any) => {
+        const model = dagreLayout.layout(n);
+        (graph.current as unknown as Graph).fromJSON(model);
+      },
     );
   }, []);
 
@@ -167,7 +187,7 @@ export const WorkFlow = () => {
       </Row>
       <ModelContent
         visible={visible}
-        onChange={(t: string) => {
+        onChange={(t: 'handler' | 'fetch' | '') => {
           handleNodePlus(t);
           setVisible(!visible);
         }}
