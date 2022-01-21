@@ -101,13 +101,14 @@ Graph.registerEdge(
 export const portSync = (s: string, t: string) => ({
   id: nanoid(),
   shape: 'bpmn-edge',
+  // router: 'er',
   source: s,
   target: t,
 });
 
 // 开始 + 结束节点
-export const nodeSync = (t: string) => ({
-  id: nanoid(),
+export const nodeSync = (t: string, id?: string) => ({
+  id: id ?? nanoid(),
   shape: 'event',
   width: 50,
   height: 50,
@@ -148,6 +149,7 @@ export const config = {
   selecting: {
     enabled: false,
   },
+  panning: true,
   interacting: {
     nodeMovable: false,
   },

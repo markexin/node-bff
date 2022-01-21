@@ -98,29 +98,46 @@ export const WorkFlow = () => {
   const graph = useRef();
   // 缓存当前选择节点
   const selectNode = useRef<Cell | undefined>();
-  // 使用层次布局
-  const dagreLayout = new DagreLayout({
-    type: 'dagre',
-    rankdir: 'LR',
-    align: 'UR',
-    ranksep: 30,
-    nodesep: 15,
-    controlPoints: true,
-  });
+  // 缓存布局指针 TODO: ts优化
+  const dagreLayout = useRef<any>();
 
   // 增加节点
   function handleNodePlus(nodeType: 'handler' | 'fetch' | '') {
     if (nodeType === 'fetch') {
-      const { data } = (selectNode.current as any).store;
-      const { id: preId } = data;
+      const { data: current } = (selectNode.current as any).store;
+      const plus = plusSync();
       const next = eventSync('fetch', '待编辑');
+      const nodes = [...points.nodes, ...[next, plus]];
+      // ---------------------------TODO: 后续进行优化--------------------------------------
+      // 1. 清除所有倒数第一节点与尾节点的关联关系
+      const residueEdges = points.edges.filter(
+        (n: { target: string }) => n.target !== 'end',
+      );
+      // 2. 找出所有的plus节点
+      const plusNode = nodes.filter(
+        (n: { data: { _key: string } }) => n.data._key === 'plus',
+      );
+      // 3. 筛选出已建立子节点连接plus节点
+      const cacheEdges = [
+        ...residueEdges,
+        ...[portSync(current.id, next.id), portSync(next.id, plus.id)],
+      ];
+      const residueNodes = plusNode.filter(
+        (n: { id: string }) =>
+          !cacheEdges.map((s: any) => s.source).includes(n.id),
+      );
+      // 4. 建立与结束节点的连线
+      const othersEdges = residueNodes.map((n: { id: string }) =>
+        portSync(n.id, 'end'),
+      );
+      // ---------------------------TODO: 后续进行优化--------------------------------------
       setNode(
         {
-          nodes: [...points.nodes, ...[next]],
-          edges: [...points.edges, ...[portSync(preId, next.id)]],
+          nodes,
+          edges: [...cacheEdges, ...othersEdges],
         },
         (n: any) => {
-          const model = dagreLayout.layout(n);
+          const model = dagreLayout.current.layout(n);
           (graph.current as unknown as Graph).fromJSON(model);
         },
       );
@@ -142,6 +159,16 @@ export const WorkFlow = () => {
       ...config,
     });
 
+    dagreLayout.current = new DagreLayout({
+      type: 'dagre',
+      rankdir: 'TB',
+      begin: [width / 2, 10],
+      align: 'DL',
+      ranksep: 15,
+      nodesep: 25,
+      controlPoints: true,
+    });
+
     // 定义事件方法
     (graph.current as unknown as Graph).on(
       'cell:click',
@@ -156,18 +183,17 @@ export const WorkFlow = () => {
       },
     );
 
-    const start = nodeSync('开始');
-    const end = nodeSync('结束');
-    const plus = plusSync();
-
     // 初始化节点
+    const start = nodeSync('开始', 'start');
+    const end = nodeSync('结束', 'end');
+    const plus = plusSync();
     setNode(
       {
         nodes: [start, plus, end],
         edges: [portSync(start.id, plus.id), portSync(plus.id, end.id)],
       },
       (n: any) => {
-        const model = dagreLayout.layout(n);
+        const model = dagreLayout.current.layout(n);
         (graph.current as unknown as Graph).fromJSON(model);
       },
     );
