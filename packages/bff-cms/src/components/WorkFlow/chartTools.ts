@@ -37,6 +37,10 @@ Graph.registerNode(
         selector: 'label',
       },
     ],
+    tools: {
+      name: 'button-remove',
+      args: { distance: -40 },
+    },
     attrs: {
       body: {
         rx: 6,
@@ -101,7 +105,6 @@ Graph.registerEdge(
 export const portSync = (s: string, t: string) => ({
   id: nanoid(),
   shape: 'bpmn-edge',
-  // router: 'er',
   source: s,
   target: t,
 });
