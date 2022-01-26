@@ -107,6 +107,7 @@ export const portSync = (s: string, t: string) => ({
   shape: 'bpmn-edge',
   source: s,
   target: t,
+  next: {},
 });
 
 // 开始 + 结束节点
@@ -119,6 +120,7 @@ export const nodeSync = (t: string, id?: string) => ({
   data: {
     _key: '',
   },
+  next: {},
 });
 
 // 增加按钮
@@ -130,6 +132,7 @@ export const plusSync = () => ({
   data: {
     _key: 'plus',
   },
+  next: {},
 });
 
 // 事件节点

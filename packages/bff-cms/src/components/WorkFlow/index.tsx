@@ -4,16 +4,10 @@ import { Graph, Cell, EdgeView, Vector } from '@antv/x6';
 import { DagreLayout } from '@antv/layout';
 import { IconWifi, IconCode } from '@douyinfe/semi-icons';
 import useStateCallback from '@/hooks/useStateCallback';
+import { vNode } from '@/hooks/useTreeNode';
 import { PostTools } from '../PostTools';
 import { CodeEditor } from '../CodeEditor';
-import {
-  config,
-  GraphHoc,
-  portSync,
-  nodeSync,
-  plusSync,
-  eventSync,
-} from './chartTools';
+import { config, GraphHoc } from './chartTools';
 
 // 选择类型弹窗
 const ModelContent: FC<{
@@ -106,46 +100,48 @@ export const WorkFlow = () => {
 
   // 增加节点
   function handleNodePlus(nodeType: 'handler' | 'fetch' | '') {
-    function addNode(type: string) {
-      const { data: current } = (selectNode.current as any).store;
-      const plus = plusSync();
-      const next = eventSync(type, type);
-      const nodes = [...points.nodes, ...[next, plus]];
-      // ---------------------------TODO: 后续进行优化--------------------------------------
-      // 1. 清除所有倒数第一节点与尾节点的关联关系
-      const residueEdges = points.edges.filter(
-        (n: { target: string }) => n.target !== 'end',
-      );
-      // 2. 找出所有的plus节点
-      const plusNode = nodes.filter(
-        (n: { data: { _key: string } }) => n.data._key === 'plus',
-      );
-      // 3. 筛选出已建立子节点连接plus节点
-      const cacheEdges = [
-        ...residueEdges,
-        ...[portSync(current.id, next.id), portSync(next.id, plus.id)],
-      ];
-      const residueNodes = plusNode.filter(
-        (n: { id: string }) =>
-          !cacheEdges.map((s: any) => s.source).includes(n.id),
-      );
-      // 4. 建立与结束节点的连线
-      const othersEdges = residueNodes.map((n: { id: string }) =>
-        portSync(n.id, 'end'),
-      );
-      // ---------------------------TODO: 后续进行优化--------------------------------------
-      setNode(
-        {
-          nodes,
-          edges: [...cacheEdges, ...othersEdges],
-        },
-        (n: any) => {
-          const model = dagreLayout.current.layout(n);
-          (graph.current as unknown as Graph).fromJSON(model);
-        },
-      );
-    }
-    if (nodeType) addNode(nodeType);
+    console.log(nodeType);
+    // setNode(onChange());
+    // function addNode(type: string) {
+    //   const { data: current } = (selectNode.current as any).store;
+    //   const plus = plusSync();
+    //   const next = eventSync(type, type);
+    //   const nodes = [...points.nodes, ...[next, plus]];
+    //   // ---------------------------TODO: 后续进行优化--------------------------------------
+    //   // 1. 清除所有倒数第一节点与尾节点的关联关系
+    //   const residueEdges = points.edges.filter(
+    //     (n: { target: string }) => n.target !== 'end',
+    //   );
+    //   // 2. 找出所有的plus节点
+    //   const plusNode = nodes.filter(
+    //     (n: { data: { _key: string } }) => n.data._key === 'plus',
+    //   );
+    //   // 3. 筛选出已建立子节点连接plus节点
+    //   const cacheEdges = [
+    //     ...residueEdges,
+    //     ...[portSync(current.id, next.id), portSync(next.id, plus.id)],
+    //   ];
+    //   const residueNodes = plusNode.filter(
+    //     (n: { id: string }) =>
+    // !cacheEdges.map((s: any) => s.source).includes(n.id),
+    //   );
+    //   // 4. 建立与结束节点的连线
+    //   const othersEdges = residueNodes.map((n: { id: string }) =>
+    //     portSync(n.id, 'end'),
+    //   );
+    //   // ---------------------------TODO: 后续进行优化--------------------------------------
+    //   setNode(
+    //     {
+    //       nodes,
+    //       edges: [...cacheEdges, ...othersEdges],
+    //     },
+    //     (n: any) => {
+    //       const model = dagreLayout.current.layout(n);
+    //       (graph.current as unknown as Graph).fromJSON(model);
+    //     },
+    //   );
+    // }
+    // if (nodeType) addNode(nodeType);
   }
 
   // 初始化编辑器注入
@@ -228,21 +224,10 @@ export const WorkFlow = () => {
     });
     // -----------------------------节点动画------------------------------------
 
-    // 初始化节点
-    const start = nodeSync('开始', 'start');
-    const end = nodeSync('结束', 'end');
-    const plus = plusSync();
-
-    setNode(
-      {
-        nodes: [start, plus, end],
-        edges: [portSync(start.id, plus.id), portSync(plus.id, end.id)],
-      },
-      (n: any) => {
-        const model = dagreLayout.current.layout(n);
-        graph.current?.fromJSON(model);
-      },
-    );
+    setNode(new vNode().format, (n: any) => {
+      const model = dagreLayout.current.layout(n);
+      graph.current?.fromJSON(model);
+    });
   }, []);
 
   return (
