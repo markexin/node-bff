@@ -4,10 +4,10 @@ import { Graph, Cell, EdgeView, Vector } from '@antv/x6';
 import { DagreLayout } from '@antv/layout';
 import { IconWifi, IconCode } from '@douyinfe/semi-icons';
 import useStateCallback from '@/hooks/useStateCallback';
-import { vNode } from '@/hooks/useTreeNode';
+import { vNode, NodeP } from '@/hooks/useTreeNode';
 import { PostTools } from '../PostTools';
 import { CodeEditor } from '../CodeEditor';
-import { config, GraphHoc } from './chartTools';
+import { config, GraphHoc, eventSync, plusSync } from './chartTools';
 
 // 选择类型弹窗
 const ModelContent: FC<{
@@ -83,6 +83,8 @@ const ModelContent: FC<{
   );
 };
 
+const nodeStore = new vNode();
+
 export const WorkFlow = () => {
   const editRef = useRef<HTMLDivElement>(null);
   const pointsRef = useRef();
@@ -100,48 +102,13 @@ export const WorkFlow = () => {
 
   // 增加节点
   function handleNodePlus(nodeType: 'handler' | 'fetch' | '') {
-    console.log(nodeType);
-    // setNode(onChange());
-    // function addNode(type: string) {
-    //   const { data: current } = (selectNode.current as any).store;
-    //   const plus = plusSync();
-    //   const next = eventSync(type, type);
-    //   const nodes = [...points.nodes, ...[next, plus]];
-    //   // ---------------------------TODO: 后续进行优化--------------------------------------
-    //   // 1. 清除所有倒数第一节点与尾节点的关联关系
-    //   const residueEdges = points.edges.filter(
-    //     (n: { target: string }) => n.target !== 'end',
-    //   );
-    //   // 2. 找出所有的plus节点
-    //   const plusNode = nodes.filter(
-    //     (n: { data: { _key: string } }) => n.data._key === 'plus',
-    //   );
-    //   // 3. 筛选出已建立子节点连接plus节点
-    //   const cacheEdges = [
-    //     ...residueEdges,
-    //     ...[portSync(current.id, next.id), portSync(next.id, plus.id)],
-    //   ];
-    //   const residueNodes = plusNode.filter(
-    //     (n: { id: string }) =>
-    // !cacheEdges.map((s: any) => s.source).includes(n.id),
-    //   );
-    //   // 4. 建立与结束节点的连线
-    //   const othersEdges = residueNodes.map((n: { id: string }) =>
-    //     portSync(n.id, 'end'),
-    //   );
-    //   // ---------------------------TODO: 后续进行优化--------------------------------------
-    //   setNode(
-    //     {
-    //       nodes,
-    //       edges: [...cacheEdges, ...othersEdges],
-    //     },
-    //     (n: any) => {
-    //       const model = dagreLayout.current.layout(n);
-    //       (graph.current as unknown as Graph).fromJSON(model);
-    //     },
-    //   );
-    // }
-    // if (nodeType) addNode(nodeType);
+    const { data: current } = (selectNode.current as any).store;
+    const next = eventSync(nodeType);
+    const format = nodeStore.add(current.id, next);
+    setNode(format, (n: any) => {
+      const model = dagreLayout.current.layout(n);
+      graph.current?.fromJSON(model);
+    });
   }
 
   // 初始化编辑器注入
@@ -224,11 +191,11 @@ export const WorkFlow = () => {
     });
     // -----------------------------节点动画------------------------------------
 
-    setNode(new vNode().format, (n: any) => {
+    setNode(nodeStore.format, (n: any) => {
       const model = dagreLayout.current.layout(n);
       graph.current?.fromJSON(model);
     });
-  }, []);
+  }, [setNode]);
 
   return (
     <>

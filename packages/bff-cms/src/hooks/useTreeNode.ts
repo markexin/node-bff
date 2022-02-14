@@ -11,7 +11,7 @@ interface NodesR<T> {
   edges: [];
 }
 
-interface NodeP {
+export interface NodeP {
   id: string;
   shape: string;
   width: number;
@@ -26,31 +26,29 @@ interface NodeP {
 export class vNode {
   nodes: NodeP;
   format: NodesR<NodeP>;
+  start: NodeP;
+  end: NodeP;
 
   constructor() {
     this.nodes = nodeSync('开始', 'start');
     // @ts-ignore TODO: ts类型优化
     this.format = {};
+    this.start = plusSync();
+    this.end = nodeSync('结束', 'end');
     this.init();
   }
 
-  dfs(searchId: string, nodes: NodeP): NodeP {
+  dfs(searchId: string, nodes: NodeP) {
     if (nodes.id === searchId) {
       return nodes;
     }
     if (nodes.next[searchId]) {
       return nodes.next[searchId];
     }
-    Object.values(nodes?.next).forEach((n) => this.dfs(searchId, n));
-    console.warn('==============> Node Search Error <==============');
-    return {
-      id: 'error',
-      shape: '',
-      width: 0,
-      height: 0,
-      data: { _key: 'error' },
-      next: {},
-    };
+    const nexts = Object.values(nodes?.next);
+    for (let index = 0; index < nexts.length; index++) {
+      this.dfs(searchId, nexts[index]);
+    }
   }
 
   /**
@@ -65,13 +63,36 @@ export class vNode {
       if (JSON.stringify(node) !== '{}') {
         Object.values(node.next).forEach((n) => {
           // @ts-ignore TODO: 类型优化
-          this.format.edges.push(portSync(n.id, node.id));
+          this.format.edges.push(portSync(node.id, n.id));
           dfs(n);
         });
       }
     };
     dfs(this.nodes);
-    return this.format;
+    return JSON.parse(JSON.stringify(this.format));
+  }
+
+  /**
+   * 重新定义end节点位置
+   */
+  fillEnd() {
+    const dfs = (node: NodeP) => {
+      if (node.next['end'] && Object.values(node.next).length > 1) {
+        delete node.next['end'];
+        Object.values(node.next).forEach((n) => {
+          dfs(n);
+        });
+      }
+      if (!node.next['end'] && Object.values(node.next).length === 0) {
+        node.next['end'] = this.end;
+      }
+      if (!node.next['end'] && Object.values(node.next).length >= 1) {
+        Object.values(node.next).forEach((n) => {
+          dfs(n);
+        });
+      }
+    };
+    dfs(this.nodes);
   }
 
   /**
@@ -80,18 +101,22 @@ export class vNode {
    * @param node 当前节点NODE
    * @returns 当前节点NODE
    */
-  add(parentId: string, node: NodeP): NodeP {
+  add(parentId: string, node: NodeP): NodesR<NodeP> {
+    // @ts-ignore
     const currentNode = this.dfs(parentId, this.nodes);
-    currentNode.next[node.id] = node;
-    return currentNode.next[node.id];
+    // 初始化
+    const plus = plusSync();
+    node.next[plus.id] = plus;
+    currentNode!.next[node.id] = node;
+    this.fillEnd();
+    console.log(this.nodes, '=======================================');
+    return this.normalize();
   }
 
   // 数据初始化
   init() {
-    const plus = plusSync();
-    const next = this.add(this.nodes.id, plus);
-    const end = nodeSync('结束', 'end');
-    this.add(next.id, end);
+    this.nodes.next[this.start.id] = this.start;
+    this.start.next[this.end.id] = this.end;
     this.normalize();
   }
 }

@@ -136,15 +136,16 @@ export const plusSync = () => ({
 });
 
 // 事件节点
-export const eventSync = (type: string, label: string) => ({
+export const eventSync = (type: string) => ({
   id: nanoid(),
   shape: 'activity',
   width: 100,
   height: 60,
-  label,
+  label: type,
   data: {
     _key: type,
   },
+  next: {},
 });
 
 // 流程图基础配置
