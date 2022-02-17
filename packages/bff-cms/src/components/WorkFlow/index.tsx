@@ -4,10 +4,10 @@ import { Graph, Cell, EdgeView, Vector } from '@antv/x6';
 import { DagreLayout } from '@antv/layout';
 import { IconWifi, IconCode } from '@douyinfe/semi-icons';
 import useStateCallback from '@/hooks/useStateCallback';
-import { vNode, NodeP } from '@/hooks/useTreeNode';
+import { vNode } from '@/hooks/useTreeNode';
 import { PostTools } from '../PostTools';
 import { CodeEditor } from '../CodeEditor';
-import { config, GraphHoc, eventSync, plusSync } from './chartTools';
+import { config, GraphHoc, eventSync } from './chartTools';
 
 // 选择类型弹窗
 const ModelContent: FC<{
@@ -148,8 +148,14 @@ export const WorkFlow = () => {
 
     // 自定义事件方法  ---- 节点删除
     graph.current.on('cell:removed', ({ cell }: { cell: Cell }) => {
-      //
-      console.log(pointsRef.current, cell, '================');
+      const { _key } = cell.data || {};
+      if (_key) {
+        const format = nodeStore.remove(cell.id);
+        setNode(format, (n: any) => {
+          const model = dagreLayout.current.layout(n);
+          graph.current?.fromJSON(model);
+        });
+      }
     });
 
     // -----------------------------节点动画------------------------------------

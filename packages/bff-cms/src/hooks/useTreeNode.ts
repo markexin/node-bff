@@ -38,7 +38,7 @@ export class vNode {
     this.init();
   }
 
-  dfs(searchId: string, nodes: NodeP) {
+  dfs(searchId: string, nodes: NodeP): NodeP | undefined {
     if (nodes.id === searchId) {
       return nodes;
     }
@@ -47,7 +47,23 @@ export class vNode {
     }
     const nexts = Object.values(nodes?.next);
     for (let index = 0; index < nexts.length; index++) {
-      this.dfs(searchId, nexts[index]);
+      const node: NodeP | undefined = this.dfs(searchId, nexts[index]);
+      if (node) {
+        return node;
+      }
+    }
+  }
+
+  parentDfs(searchId: string, nodes: NodeP): NodeP | undefined {
+    if (nodes.next[searchId]) {
+      return nodes;
+    }
+    const nexts = Object.values(nodes?.next);
+    for (let index = 0; index < nexts.length; index++) {
+      const node: NodeP | undefined = this.parentDfs(searchId, nexts[index]);
+      if (node) {
+        return node;
+      }
     }
   }
 
@@ -109,7 +125,13 @@ export class vNode {
     node.next[plus.id] = plus;
     currentNode!.next[node.id] = node;
     this.fillEnd();
-    console.log(this.nodes, '=======================================');
+    return this.normalize();
+  }
+
+  remove(id: string) {
+    const parentNode = this.parentDfs(id, this.nodes);
+    delete parentNode?.next[id];
+    this.fillEnd();
     return this.normalize();
   }
 
