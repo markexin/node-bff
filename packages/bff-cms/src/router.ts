@@ -14,6 +14,28 @@ export const router = [
   //   },
   // },
   {
+    itemKey: 'datasource',
+    text: '仪表盘',
+    icon: {
+      components: IconHistogram,
+      attribute: {
+        size: 'large',
+      },
+    },
+    components: React.lazy(() => import('./views/InterfaceManagement')),
+  },
+  {
+    itemKey: 'origin',
+    text: '域名管理',
+    icon: {
+      components: IconSetting,
+      attribute: {
+        size: 'large',
+      },
+    },
+    components: React.lazy(() => import('./views/OriginManagement')),
+  },
+  {
     itemKey: 'project',
     text: '项目管理',
     icon: {
@@ -29,17 +51,6 @@ export const router = [
     text: '接口管理',
     icon: {
       components: IconCode,
-      attribute: {
-        size: 'large',
-      },
-    },
-    components: React.lazy(() => import('./views/InterfaceManagement')),
-  },
-  {
-    itemKey: 'datasource',
-    text: '数据看板',
-    icon: {
-      components: IconHistogram,
       attribute: {
         size: 'large',
       },

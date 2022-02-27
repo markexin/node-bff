@@ -2,7 +2,8 @@
   "name": "node-bff",
   "private": true,
   "scripts": {
-    "cms": "lerna run --parallel cms"
+    "cms": "lerna run --parallel cms",
+    "cms:server": "lerna run --parallel cms-server"
   },
   "devDependencies": {
     "lerna": "^4.0.0"

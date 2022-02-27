@@ -2,11 +2,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import interfaceSlice from './views/InterfaceManagement/interface.slice';
 import projectSlice from './views/ProjectManagement/project.slice';
+import originSlice from './views/OriginManagement/origin.slice';
 
 export const store = configureStore({
   reducer: {
     projectSlice,
     interfaceSlice,
+    originSlice,
   },
 });
 
