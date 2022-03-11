@@ -2,10 +2,10 @@ import React from 'react';
 import { SideSheet } from '@douyinfe/semi-ui';
 import { WorkFlow } from '@/components/WorkFlow';
 import { useAppSelector, useAppDispatch } from '@/store';
-import { change } from './interface.slice';
+import { change } from './dashbord.slice';
 
 export const SideSheetForm = () => {
-  const visible = useAppSelector((state) => state.interfaceSlice.visible);
+  const visible = useAppSelector((state) => state.dashbordSlice.visible);
   const dispatch = useAppDispatch();
 
   // 取消弹窗

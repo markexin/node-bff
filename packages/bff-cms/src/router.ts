@@ -22,7 +22,7 @@ export const router = [
         size: 'large',
       },
     },
-    components: React.lazy(() => import('./views/InterfaceManagement')),
+    components: React.lazy(() => import('./views/DashbordManagement')),
   },
   {
     itemKey: 'origin',
@@ -55,7 +55,7 @@ export const router = [
         size: 'large',
       },
     },
-    components: React.lazy(() => import('./views/InterfaceManagement')),
+    components: React.lazy(() => import('./views/DashbordManagement')),
   },
 ];
 

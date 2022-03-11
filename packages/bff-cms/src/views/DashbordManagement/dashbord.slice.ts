@@ -1,17 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 // Define a type for the slice state
-interface InterfaceState {
+interface DashbordState {
   visible: boolean;
 }
 
 // Define the initial state using that type
-const initialState: InterfaceState = {
+const initialState: DashbordState = {
   visible: false,
 };
 
-export const interfaceSlice = createSlice({
-  name: 'interface',
+export const dashbordSlice = createSlice({
+  name: 'dashbord',
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
@@ -22,6 +22,6 @@ export const interfaceSlice = createSlice({
   },
 });
 
-export const { change } = interfaceSlice.actions;
+export const { change } = dashbordSlice.actions;
 
-export default interfaceSlice.reducer;
+export default dashbordSlice.reducer;

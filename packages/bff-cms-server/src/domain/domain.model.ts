@@ -20,6 +20,9 @@ export class Domain extends Model<Domain> {
   @Column
   domainDesc: string;
 
+  @Column
+  creator: string;
+
   @CreatedAt
   creationDate: Date;
 

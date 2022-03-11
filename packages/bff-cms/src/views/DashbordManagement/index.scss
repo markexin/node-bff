@@ -1,0 +1,32 @@
+@mixin borderShadow {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    box-shadow: 0 0 6px 1px #eee;
+}
+
+.dashbord {
+    &-moniter {
+        display: flex;
+        ul {
+            @include borderShadow();
+            width: 540px;
+            display: flex;
+            padding: 40px 20px;
+            li {
+                list-style: none;
+                flex: 1;
+            }
+        }
+        & > div  {
+            @include borderShadow();
+            flex: 1;
+            margin: 16px 20px;
+            padding: 40px 20px;
+        }
+    }
+
+    &-datasource {
+        @include borderShadow();
+        padding: 40px 20px;
+    }
+}

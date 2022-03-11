@@ -24,6 +24,10 @@ __decorate([
     __metadata("design:type", String)
 ], Domain.prototype, "domainDesc", void 0);
 __decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], Domain.prototype, "creator", void 0);
+__decorate([
     sequelize_typescript_1.CreatedAt,
     __metadata("design:type", Date)
 ], Domain.prototype, "creationDate", void 0);

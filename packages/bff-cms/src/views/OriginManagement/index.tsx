@@ -32,7 +32,13 @@ function getColumns(func: Function) {
       dataIndex: 'operate',
       render: () => (
         <>
-          <Button onClick={() => func()}>编辑</Button>
+          <Button onClick={() => func()}>规则</Button>
+          <Button style={{ marginLeft: '20px' }} onClick={() => func()}>
+            上线
+          </Button>
+          <Button style={{ marginLeft: '20px' }} onClick={() => func()}>
+            回滚
+          </Button>
           <Button type='danger' style={{ marginLeft: '20px' }}>
             删除
           </Button>
@@ -44,9 +50,9 @@ function getColumns(func: Function) {
 
 const data = [
   {
-    id: 'xxxxx',
-    group: 'xx项目',
-    desc: '国服XXXX项目',
+    id: '1',
+    domainUrl: 'xxx.abc.com',
+    domainDesc: '测试地址',
     updateTime: '2022-01-01',
     creater: '某某某',
   },
