@@ -4,11 +4,20 @@ import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    proxy: {
+      '/api': 'http://localhost:3001',
+    },
+  },
   resolve: {
     alias: [
       {
         find: '@',
         replacement: resolve(__dirname, 'src'),
+      },
+      {
+        find: 'utils',
+        replacement: resolve(__dirname, 'utils'),
       },
     ],
   },

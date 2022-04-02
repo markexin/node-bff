@@ -1,0 +1,9 @@
+@mixin borderShadow {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    box-shadow: 0 0 6px 1px #eee;
+}
+
+.interface-border {
+    @include borderShadow();
+}

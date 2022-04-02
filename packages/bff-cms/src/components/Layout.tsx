@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Breadcrumb } from '@douyinfe/semi-ui';
 import { useLocation } from 'react-router-dom';
-import { FooterC } from './Footer';
+// import { FooterC } from './Footer';
 import { NavC, HeaderC } from './Header';
 import { router } from '../router';
 
@@ -13,7 +13,12 @@ export const LayoutC = (props: {
   const location = useLocation();
   const currentMenu = router.find((r) => `/${r.itemKey}` === location.pathname);
   return (
-    <Layout style={{ border: '1px solid var(--semi-color-border)' }}>
+    <Layout
+      style={{
+        border: '1px solid var(--semi-color-border)',
+        height: '100vh',
+        overflow: 'hidden',
+      }}>
       <Sider style={{ backgroundColor: 'var(--semi-color-bg-1)' }}>
         <NavC />
       </Sider>
@@ -31,7 +36,6 @@ export const LayoutC = (props: {
             }}></Breadcrumb>
           {props.children}
         </Content>
-        <FooterC />
       </Layout>
     </Layout>
   );

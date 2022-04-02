@@ -1,13 +1,13 @@
 import React from 'react';
 import { Form, Row, Button } from '@douyinfe/semi-ui';
 import { useAppDispatch } from '@/store';
-import { change, fetchProject } from './project.slice';
+import { change, fetchInterface } from './interface.slice';
 
 export const FormSearch = () => {
   const dispatch = useAppDispatch();
   const handleSubmit = (params: Record<string, any>) => {
     const { projectName } = params;
-    dispatch(fetchProject(projectName));
+    dispatch(fetchInterface(projectName));
   };
   return (
     <Form
@@ -17,8 +17,8 @@ export const FormSearch = () => {
       style={{ marginBottom: '20px' }}>
       <Row type='flex'>
         <Form.Input
-          field='projectName'
-          label='项目检索'
+          field='apiPath'
+          label='地址检索'
           style={{ width: '250px' }}
           trigger='blur'
         />

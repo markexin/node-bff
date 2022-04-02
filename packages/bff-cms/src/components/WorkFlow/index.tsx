@@ -85,7 +85,7 @@ const ModelContent: FC<{
 
 const nodeStore = new vNode();
 
-export const WorkFlow = () => {
+export const WorkFlow: FC = (props) => {
   const editRef = useRef<HTMLDivElement>(null);
   const pointsRef = useRef();
   const [points, setNode] = useStateCallback({});
@@ -207,14 +207,15 @@ export const WorkFlow = () => {
     <>
       <Row gutter={30}>
         <Col span={12}>
-          <div ref={editRef}></div>
-        </Col>
-        <Col span={12}>
-          {(() => {
+          {/* {(() => {
             if (viewControl === 'handler') return <CodeEditor />;
             else if (viewControl === 'fetch') return <PostTools />;
-            else return <>Welcome</>;
-          })()}
+            else return props.children;
+          })()} */}
+          {props.children}
+        </Col>
+        <Col span={12}>
+          <div ref={editRef}></div>
         </Col>
       </Row>
       <ModelContent

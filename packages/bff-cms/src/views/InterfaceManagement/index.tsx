@@ -1,22 +1,32 @@
 import React, { FC, useEffect } from 'react';
-import moment from 'moment';
 import {
   Button,
   Table,
-  Notification,
-  Toast,
   Popconfirm,
+  Toast,
+  Notification,
+  SideSheet,
 } from '@douyinfe/semi-ui';
+import moment from 'moment';
 import { FormSearch } from './FormSearch';
-import { DialogForm, Environment } from './DialogForm';
+import { WorkFlow } from '@/components/WorkFlow';
+import NginxAuto from '@/components/NginxAuto';
+import InterfaceForm from '@/components/InterfaceForm';
 import { useAppDispatch, useAppSelector } from '@/store';
 import request from 'utils/request';
-import { change, fetchOrigin } from './origin.slice';
+import {
+  change,
+  fetchInterface,
+  typeEnum,
+  statusEnum,
+} from './interface.slice';
+
+import './index.scss';
 
 function getColumns(func: Function, reset: Function) {
   // 项目删除
   async function handleDelete(_id: string) {
-    const { code } = await request.delete(`/api/origin/delete/${_id}`);
+    const { code } = await request.delete(`/api/project/delete/${_id}`);
     if (code === 0) {
       Notification.success({
         duration: 2,
@@ -31,21 +41,31 @@ function getColumns(func: Function, reset: Function) {
   function onCancel() {
     Toast.warning('取消删除！');
   }
+
   return [
     {
-      title: '环境',
-      dataIndex: 'environment',
-      render: (item: keyof typeof Environment) => (
-        <span>{Environment[item]}</span>
-      ),
+      title: '规则地址',
+      dataIndex: 'apiPath',
     },
     {
-      title: '域名地址',
-      dataIndex: 'originPath',
+      title: '归属',
+      dataIndex: 'originName',
     },
     {
-      title: '所属项目',
-      dataIndex: 'projectName',
+      title: '类型',
+      dataIndex: 'type',
+      render: (item: keyof typeof typeEnum) => <span>{typeEnum[item]}</span>,
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      render: (item: keyof typeof statusEnum) => {
+        for (const key in statusEnum) {
+          if (statusEnum[key] === item) {
+            return <span>{key}</span>;
+          }
+        }
+      },
     },
     {
       title: '更新日期',
@@ -65,7 +85,7 @@ function getColumns(func: Function, reset: Function) {
         <>
           <Button onClick={() => func(_id)}>编辑</Button>
           <Popconfirm
-            title='确定是否要删除此域名？'
+            title='确定是否要删除此项目？'
             content='此删除将不可逆'
             onConfirm={handleDelete.bind(null, _id)}
             onCancel={onCancel}>
@@ -82,8 +102,12 @@ function getColumns(func: Function, reset: Function) {
 
 const ProjectManagement: FC = () => {
   const dispatch = useAppDispatch();
-  const tableData = useAppSelector((state) => state.originSlice.list);
-  const getTableList = () => dispatch(fetchOrigin());
+  const tableData = useAppSelector((state) => state.interfaceSlice.list);
+  const visible = useAppSelector((state) => state.interfaceSlice.visible);
+  const currentOpType = useAppSelector((state) => state.interfaceSlice.type);
+  const getTableList = () => dispatch(fetchInterface());
+  // const [originList, setOriginList] = useState<OriginGetListSync[]>([]);
+
   // 弹窗唤起
   function onOpenHandler(id: string) {
     dispatch(change(id));
@@ -102,7 +126,18 @@ const ProjectManagement: FC = () => {
         dataSource={tableData}
         pagination={true}
       />
-      <DialogForm />
+      <SideSheet
+        title='新增规则配置'
+        width={'100%'}
+        visible={visible}
+        onCancel={() => dispatch(change(''))}>
+        <WorkFlow>
+          <InterfaceForm />
+          {currentOpType === 0 ? (
+            <NginxAuto className='interface-border' />
+          ) : null}
+        </WorkFlow>
+      </SideSheet>
     </>
   );
 };

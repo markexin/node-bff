@@ -1,4 +1,9 @@
-import { IconHistogram, IconSetting, IconCode } from '@douyinfe/semi-icons';
+import {
+  IconHistogram,
+  IconSetting,
+  IconCode,
+  IconInherit,
+} from '@douyinfe/semi-icons';
 import React from 'react';
 
 export const router = [
@@ -25,6 +30,17 @@ export const router = [
     components: React.lazy(() => import('./views/DashbordManagement')),
   },
   {
+    itemKey: 'project',
+    text: '项目管理',
+    icon: {
+      components: IconInherit,
+      attribute: {
+        size: 'large',
+      },
+    },
+    components: React.lazy(() => import('./views/ProjectManagement')),
+  },
+  {
     itemKey: 'origin',
     text: '域名管理',
     icon: {
@@ -36,17 +52,6 @@ export const router = [
     components: React.lazy(() => import('./views/OriginManagement')),
   },
   {
-    itemKey: 'project',
-    text: '项目管理',
-    icon: {
-      components: IconSetting,
-      attribute: {
-        size: 'large',
-      },
-    },
-    components: React.lazy(() => import('./views/ProjectManagement')),
-  },
-  {
     itemKey: 'interface',
     text: '接口管理',
     icon: {
@@ -55,7 +60,7 @@ export const router = [
         size: 'large',
       },
     },
-    components: React.lazy(() => import('./views/DashbordManagement')),
+    components: React.lazy(() => import('./views/InterfaceManagement')),
   },
 ];
 

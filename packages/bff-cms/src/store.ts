@@ -3,12 +3,14 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import dashbordSlice from './views/DashbordManagement/dashbord.slice';
 import projectSlice from './views/ProjectManagement/project.slice';
 import originSlice from './views/OriginManagement/origin.slice';
+import interfaceSlice from './views/InterfaceManagement/interface.slice';
 
 export const store = configureStore({
   reducer: {
     projectSlice,
     dashbordSlice,
     originSlice,
+    interfaceSlice,
   },
 });
 

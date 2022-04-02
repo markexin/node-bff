@@ -2,11 +2,11 @@ import React, { FC, useEffect, useRef } from 'react';
 import { Form, Row, Button, Modal, Notification } from '@douyinfe/semi-ui';
 import { useAppSelector, useAppDispatch } from '@/store';
 import request from 'utils/request';
-import { change, fetchProject } from './project.slice';
+import { change, fetchInterface } from './interface.slice';
 
 export const DialogForm: FC = () => {
-  const visible = useAppSelector((state) => state.projectSlice.visible);
-  const id = useAppSelector((state) => state.projectSlice.id);
+  const visible = useAppSelector((state) => state.interfaceSlice.visible);
+  const id = useAppSelector((state) => state.interfaceSlice.id);
   const dispatch = useAppDispatch();
   const formBRef = useRef(null);
 
@@ -25,7 +25,7 @@ export const DialogForm: FC = () => {
         duration: 2,
       });
       onCancelHandler();
-      dispatch(fetchProject());
+      dispatch(fetchInterface());
     }
   }
 

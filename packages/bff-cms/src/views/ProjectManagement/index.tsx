@@ -1,72 +1,99 @@
-import React from 'react';
-import { Button, Table } from '@douyinfe/semi-ui';
+import React, { FC, useEffect } from 'react';
+import {
+  Button,
+  Table,
+  Popconfirm,
+  Toast,
+  Notification,
+} from '@douyinfe/semi-ui';
+import moment from 'moment';
 import { FormSearch } from './FormSearch';
 import { DialogForm } from './DialogForm';
-import { useAppDispatch } from '@/store';
-import { change } from './project.slice';
+import { useAppDispatch, useAppSelector } from '@/store';
+import request from 'utils/request';
+import { change, fetchProject } from './project.slice';
 
-function getColumns(func: Function) {
+function getColumns(func: Function, reset: Function) {
+  // 项目删除
+  async function handleDelete(_id: string) {
+    const { code } = await request.delete(`/api/project/delete/${_id}`);
+    if (code === 0) {
+      Notification.success({
+        duration: 2,
+        position: 'top',
+        title: '删除成功！',
+      });
+      reset();
+    }
+  }
+
+  // 删除取消
+  function onCancel() {
+    Toast.warning('取消删除！');
+  }
+
   return [
     {
-      title: '编号',
-      dataIndex: 'id',
-    },
-    {
       title: '项目名称',
-      dataIndex: 'group',
+      dataIndex: 'projectName',
     },
     {
       title: '项目描述',
-      dataIndex: 'desc',
+      dataIndex: 'projectDesc',
     },
     {
       title: '更新日期',
       dataIndex: 'updateTime',
+      render: (item: string) => (
+        <span>{moment(item).format('YYYY-MM-DD  hh:mm:ss')}</span>
+      ),
     },
     {
       title: '操作人',
-      dataIndex: 'creater',
+      dataIndex: 'updater',
     },
     {
       title: '操作',
-      dataIndex: 'operate',
-      render: () => (
+      dataIndex: '_id',
+      render: (_id: string) => (
         <>
-          <Button onClick={() => func()}>编辑</Button>
-          <Button type='danger' style={{ marginLeft: '20px' }}>
-            删除
-          </Button>
+          <Button onClick={() => func(_id)}>编辑</Button>
+          <Popconfirm
+            title='确定是否要删除此项目？'
+            content='此删除将不可逆'
+            onConfirm={handleDelete.bind(null, _id)}
+            onCancel={onCancel}>
+            {/* https://github.com/DouyinFE/semi-design/issues/201 */}
+            <Button type='danger' style={{ marginLeft: '20px' }}>
+              删除
+            </Button>
+          </Popconfirm>
         </>
       ),
     },
   ];
 }
 
-const data = [
-  {
-    id: 'xxxxx',
-    group: 'xx项目',
-    desc: '国服XXXX项目',
-    updateTime: '2022-01-01',
-    creater: '某某某',
-  },
-];
-
-const ProjectManagement = () => {
+const ProjectManagement: FC = () => {
   const dispatch = useAppDispatch();
-
+  const tableData = useAppSelector((state) => state.projectSlice.list);
+  const getTableList = () => dispatch(fetchProject());
   // 弹窗唤起
-  function onOpenHandler() {
-    dispatch(change());
+  function onOpenHandler(id: string) {
+    dispatch(change(id));
   }
+
+  useEffect(() => {
+    getTableList();
+  }, []);
 
   return (
     <>
       <FormSearch />
       <Table
         bordered
-        columns={getColumns(onOpenHandler)}
-        dataSource={data}
+        columns={getColumns(onOpenHandler, getTableList)}
+        dataSource={tableData}
         pagination={true}
       />
       <DialogForm />

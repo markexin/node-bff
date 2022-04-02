@@ -12,17 +12,28 @@ export const NavC = () => {
   return (
     <Nav
       defaultSelectedKeys={['Home']}
-      style={{ maxWidth: 220, height: '100vh' }}
+      style={{
+        maxWidth: 220,
+        height: '100vh',
+        fontSize: '34px',
+        fontWeight: 'bold',
+      }}
       items={routerFormat()}
       onClick={({ itemKey }: { itemKey: React.ReactText }) =>
         navigate(`/${itemKey}`)
       }
-      header={{
-        logo: <img src='../../assests/mirror.png' alt='' />,
-        text: '反光镜',
-      }}
+      header={
+        <>
+          <img
+            style={{ width: '60px', height: '60px' }}
+            src='../../assests/mirror.png'
+            alt='Mirror'
+          />
+          <p>Mirror</p>
+        </>
+      }
       footer={{
-        collapseButton: true,
+        collapseButton: false,
       }}
     />
   );
