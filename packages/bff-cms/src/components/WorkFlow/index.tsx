@@ -5,8 +5,6 @@ import { DagreLayout } from '@antv/layout';
 import { IconWifi, IconCode } from '@douyinfe/semi-icons';
 import useStateCallback from '@/hooks/useStateCallback';
 import { vNode } from '@/hooks/useTreeNode';
-import { PostTools } from '../PostTools';
-import { CodeEditor } from '../CodeEditor';
 import { config, GraphHoc, eventSync } from './chartTools';
 
 // 选择类型弹窗
@@ -85,12 +83,14 @@ const ModelContent: FC<{
 
 const nodeStore = new vNode();
 
-export const WorkFlow: FC = (props) => {
+export const WorkFlow: FC<{
+  onChange?: Function;
+  className?: string;
+}> = ({ className, onChange }) => {
   const editRef = useRef<HTMLDivElement>(null);
   const pointsRef = useRef();
   const [points, setNode] = useStateCallback({});
   const [visible, setVisible] = useState<boolean>(false);
-  const [viewControl, setViewControl] = useState<'handler' | 'fetch' | ''>('');
   // 缓存全局视图实例
   const graph = useRef<Graph>();
   // 缓存当前选择节点
@@ -137,7 +137,8 @@ export const WorkFlow: FC = (props) => {
     graph.current.on('cell:click', ({ cell }: { cell: Cell }) => {
       const { _key } = cell.data;
       if (_key === 'handler' || _key === 'fetch') {
-        return setViewControl(_key);
+        // return setViewControl(_key);
+        onChange && onChange(_key);
       }
       if (_key === 'plus') {
         setVisible(!visible);
@@ -204,20 +205,8 @@ export const WorkFlow: FC = (props) => {
   }, [setNode]);
 
   return (
-    <>
-      <Row gutter={30}>
-        <Col span={12}>
-          {/* {(() => {
-            if (viewControl === 'handler') return <CodeEditor />;
-            else if (viewControl === 'fetch') return <PostTools />;
-            else return props.children;
-          })()} */}
-          {props.children}
-        </Col>
-        <Col span={12}>
-          <div ref={editRef}></div>
-        </Col>
-      </Row>
+    <div className={className}>
+      <div ref={editRef}></div>
       <ModelContent
         visible={visible}
         onChange={(t: 'handler' | 'fetch' | '') => {
@@ -226,6 +215,6 @@ export const WorkFlow: FC = (props) => {
         }}
         onCancel={() => setVisible(!visible)}
       />
-    </>
+    </div>
   );
 };

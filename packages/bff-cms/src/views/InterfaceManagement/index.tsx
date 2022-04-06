@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
   Button,
   Table,
@@ -6,6 +6,8 @@ import {
   Toast,
   Notification,
   SideSheet,
+  Col,
+  Row,
 } from '@douyinfe/semi-ui';
 import moment from 'moment';
 import { FormSearch } from './FormSearch';
@@ -13,6 +15,8 @@ import { WorkFlow } from '@/components/WorkFlow';
 import NginxAuto from '@/components/NginxAuto';
 import InterfaceForm from '@/components/InterfaceForm';
 import { useAppDispatch, useAppSelector } from '@/store';
+import { PostTools } from '@/components/PostTools';
+import { CodeEditor } from '@/components/CodeEditor';
 import request from 'utils/request';
 import {
   change,
@@ -100,17 +104,24 @@ function getColumns(func: Function, reset: Function) {
   ];
 }
 
+type ViewControlType = 'handler' | 'fetch';
+
 const ProjectManagement: FC = () => {
   const dispatch = useAppDispatch();
   const tableData = useAppSelector((state) => state.interfaceSlice.list);
   const visible = useAppSelector((state) => state.interfaceSlice.visible);
   const currentOpType = useAppSelector((state) => state.interfaceSlice.type);
   const getTableList = () => dispatch(fetchInterface());
+  const [viewControl, setViewControl] = useState<ViewControlType>('fetch');
   // const [originList, setOriginList] = useState<OriginGetListSync[]>([]);
 
   // 弹窗唤起
   function onOpenHandler(id: string) {
     dispatch(change(id));
+  }
+
+  function handleTypeChange(type: ViewControlType) {
+    setViewControl(type);
   }
 
   useEffect(() => {
@@ -131,12 +142,30 @@ const ProjectManagement: FC = () => {
         width={'100%'}
         visible={visible}
         onCancel={() => dispatch(change(''))}>
-        <WorkFlow>
-          <InterfaceForm />
-          {currentOpType === 0 ? (
-            <NginxAuto className='interface-border' />
-          ) : null}
-        </WorkFlow>
+        <Row gutter={16}>
+          <Col span={12}>
+            <div className='col-content'>
+              <InterfaceForm />
+              {currentOpType === 0 ? (
+                <NginxAuto className='interface-border' />
+              ) : viewControl === 'fetch' ? (
+                <PostTools className='interface-border' />
+              ) : (
+                <CodeEditor />
+              )}
+            </div>
+          </Col>
+          <Col span={12}>
+            {currentOpType === 0 ? (
+              <div className='interface-border'>1</div>
+            ) : (
+              <WorkFlow
+                onChange={handleTypeChange}
+                className='interface-border'
+              />
+            )}
+          </Col>
+        </Row>
       </SideSheet>
     </>
   );

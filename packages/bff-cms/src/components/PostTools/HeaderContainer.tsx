@@ -13,8 +13,8 @@ const HeaderContainer = ({ initValue = {} }: { initValue?: {} }) => {
         // overrides theme colors with whatever color value you want
         string: '#DAA520',
       }}
-      width='100%'
-      height='550px'
+      width='auto'
+      height='100px'
     />
   );
 };

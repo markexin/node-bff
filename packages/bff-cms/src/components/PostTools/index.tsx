@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import {
   Form,
   Input,
@@ -32,7 +32,13 @@ const requestTabList = [
   {
     tab: 'Body',
     itemKey: '2',
-    components: <HeaderContainer />,
+    components: (
+      <HeaderContainer
+        initValue={{
+          test: 'welcome to PostSuperMan !',
+        }}
+      />
+    ),
   },
 ];
 
@@ -96,11 +102,13 @@ function useTabsController() {
   };
 }
 
-export const PostTools = () => {
+export const PostTools: FC<{
+  className?: string;
+}> = ({ className }) => {
   const { reqStatus, resStatus, reqDisplay, resDisplay, cb } =
     useTabsController();
   return (
-    <Form>
+    <Form className={className} style={{ maxHeight: '50%' }}>
       <Section text={'PostSuperMan'}>
         <Input style={{ margin: '10px 0' }} placeholder={'请输入接口名称'} />
         <InputGroup

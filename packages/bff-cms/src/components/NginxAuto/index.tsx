@@ -1,65 +1,194 @@
 import React, { FC } from 'react';
-import { Tabs, TabPane } from '@douyinfe/semi-ui';
-import { IconFile, IconGlobe } from '@douyinfe/semi-icons';
+import { Tabs, TabPane, Form, Row, Col } from '@douyinfe/semi-ui';
+import { IconFile } from '@douyinfe/semi-icons';
 
 const NginxAuto: FC<{
   className: string;
 }> = (props) => {
+  const handleSubmit = () => {};
   return (
     <div
       className={props.className}
       style={{
         marginBottom: '20px',
         border: '1px solid #efefef',
-        padding: '20px',
+        paddingTop: '20px',
+        paddingLeft: '20px',
+        paddingRight: '20px',
       }}>
-      <Tabs tabPosition='left' type={'line'}>
-        <TabPane
-          tab={
-            <span>
-              <IconFile />
-              文档
-            </span>
-          }
-          itemKey='1'>
-          <div style={{ padding: '0 24px' }}>
-            <h3>文档</h3>
-            <p style={{ lineHeight: 1.8 }}>
-              Semi Design 是由互娱社区前端团队与 UED
-              团队共同设计开发并维护的设计系统。设计系统包含设计语言以及一整套可复用的前端组件，帮助设计师与开发者更容易地打造高质量的、用户体验一致的、符合设计规范的
-              Web 应用。
-            </p>
-            <p style={{ lineHeight: 1.8 }}>
-              区别于其他的设计系统而言，Semi Design
-              以用户中心、内容优先、设计人性化为设计理念，具有以下优势：
-            </p>
-          </div>
-        </TabPane>
-        <TabPane
-          tab={
-            <span>
-              <IconGlobe />
-              快速起步
-            </span>
-          }
-          itemKey='2'>
-          <div style={{ padding: '0 24px' }}>
-            <h3>快速起步</h3>
-            <pre
-              style={{
-                margin: '24px 0',
-                padding: '20px',
-                border: 'none',
-                whiteSpace: 'normal',
-                borderRadius: '6px',
-                color: 'var(--semi-color-text-1)',
-                backgroundColor: 'var(--semi-color-fill-0)',
-              }}>
-              <code>yarn add @douyinfe/semi-ui</code>
-            </pre>
-          </div>
-        </TabPane>
-      </Tabs>
+      <Form
+        labelPosition='left'
+        layout='horizontal'
+        onSubmit={handleSubmit}
+        style={{ marginBottom: '20px' }}>
+        <Tabs tabPosition='left' type={'line'}>
+          <TabPane
+            style={{ marginLeft: '20px' }}
+            tab={
+              <span>
+                <IconFile />
+                Server
+              </span>
+            }
+            itemKey='1'>
+            <div style={{ marginBottom: '10px' }}>
+              <Form.Input
+                field='apiPath'
+                label='域名'
+                placeholder={'example.com'}
+                labelWidth={'58px'}
+                style={{ width: '250px' }}
+                trigger='blur'
+              />
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <Form.Input
+                field='apiPath'
+                label='路径'
+                placeholder={'/var/www/example.com'}
+                labelWidth={'58px'}
+                style={{ width: '250px' }}
+                trigger='blur'
+              />
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <Form.Input
+                field='apiPath'
+                label='文档根'
+                placeholder={'/public'}
+                labelWidth={'58px'}
+                style={{ width: '250px' }}
+                trigger='blur'
+              />
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <Form.Checkbox
+                field='apiPath'
+                label='www子域'
+                style={{ width: '250px', marginTop: '6px' }}
+                trigger='blur'>
+                启用（example.com）
+              </Form.Checkbox>
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <Form.Checkbox
+                field='apiPath'
+                label='Redirect subdomains'
+                style={{ width: '350px', marginTop: '6px' }}
+                trigger='blur'>
+                启用（*.example.com → example.com）
+              </Form.Checkbox>
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <Form.Input
+                field='apiPath'
+                label='IPV4'
+                placeholder={'0.0.0.0'}
+                labelWidth={'58px'}
+                style={{ width: '250px' }}
+                trigger='blur'
+              />
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <Form.Input
+                field='apiPath'
+                label='IPV6'
+                placeholder={'::'}
+                labelWidth={'58px'}
+                style={{ width: '250px' }}
+                trigger='blur'
+              />
+            </div>
+          </TabPane>
+          <TabPane
+            style={{ marginLeft: '20px' }}
+            tab={
+              <span>
+                <IconFile />
+                HTTPS
+              </span>
+            }
+            itemKey='2'>
+            <div>
+              <Form.Checkbox
+                field='apiPath'
+                label='HTTPS'
+                style={{ width: '250px', marginTop: '6px' }}
+                trigger='blur'>
+                启用
+              </Form.Checkbox>
+            </div>
+            <div>
+              <Form.Checkbox
+                field='apiPath'
+                label='HTTP/2'
+                style={{ width: '250px', marginTop: '6px' }}
+                trigger='blur'>
+                启用
+              </Form.Checkbox>
+            </div>
+            <div>
+              <Form.Checkbox
+                field='apiPath'
+                label='定向 HTTPS'
+                style={{ width: '450px', marginTop: '6px' }}
+                trigger='blur'>
+                启用（http://example.com → https://example.com）
+              </Form.Checkbox>
+            </div>
+            <div>
+              <Form.Input
+                field='apiPath'
+                label='ssl_certificate'
+                placeholder={'/etc/nginx/ssl/example.com.crt'}
+                labelWidth={'106px'}
+                style={{ width: '250px', marginBottom: '10px' }}
+                trigger='blur'
+              />
+            </div>
+            <div>
+              <Form.Input
+                field='apiPath'
+                label='ssl_certificate_key'
+                placeholder={'/etc/nginx/ssl/example.com.key'}
+                labelWidth={'140px'}
+                style={{ width: '250px' }}
+                trigger='blur'
+              />
+            </div>
+          </TabPane>
+          <TabPane
+            style={{ marginLeft: '20px' }}
+            tab={
+              <span>
+                <IconFile />
+                Reverse proxy
+              </span>
+            }
+            itemKey='3'>
+            <div>
+              <Form.Input
+                field='apiPath'
+                label='Path'
+                placeholder={'/'}
+                labelWidth={'140px'}
+                style={{ width: '250px', marginBottom: '10px' }}
+                trigger='blur'
+              />
+            </div>
+            <div>
+              <Form.Input
+                field='apiPath'
+                label='proxy_pass'
+                placeholder={'http://127.0.0.1:3000'}
+                labelWidth={'140px'}
+                style={{ width: '250px' }}
+                trigger='blur'
+              />
+            </div>
+          </TabPane>
+        </Tabs>
+      </Form>
     </div>
   );
 };
