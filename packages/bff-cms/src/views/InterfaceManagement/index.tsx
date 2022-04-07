@@ -170,7 +170,7 @@ const InterfaceManagement: FC = () => {
           </Col>
           <Col span={12}>
             {currentOpType === 0 ? (
-              <div>test</div>
+              <CodeEditor title='Nginx配置可视化' className='interface-border' editable={false} />
             ) : (
               <WorkFlow
                 onChange={handleTypeChange}
@@ -185,6 +185,3 @@ const InterfaceManagement: FC = () => {
 };
 
 export default InterfaceManagement;
-{
-  /* <CodeEditor editable={false} />; */
-}

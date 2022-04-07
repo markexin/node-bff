@@ -2,27 +2,27 @@ import React, { FC } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 // import { nginx } from '@codemirror/legacy-modes/mode/nginx';
 
-const DEFAULT_CODE = `/*
-  © Microsoft. All rights reserved.
-
-  This library is supported for use in Windows Tailored Apps only.
-
-  Build: 6.2.8100.0 
-  Version: 0.5 
-*/
-module.exports = function (context, next) {
-    next();
+const DEFAULT_CODE =
+`server {
+    listen 80;
+    server_name example.com;
+    root /var/www/example.com;
+    location / {
+        index index.php index.html index.htm;
+        autoindex on;
+    }
 }
 `;
 
 export const CodeEditor: FC<{
+  title?: string;
   editable?: boolean;
   code?: string;
   className?: string;
-}> = ({ code, className, editable }) => {
+}> = ({ code, className, editable, title }) => {
   return (
     <div className={className}>
-      <h3>代码编辑器</h3>
+      <h3>{title || '代码编辑器'}</h3>
       <CodeMirror
         value={code ?? DEFAULT_CODE}
         height={`${document.body.clientHeight - 480}px`}

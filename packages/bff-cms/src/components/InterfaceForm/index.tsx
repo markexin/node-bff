@@ -78,7 +78,7 @@ export default function InterfaceForm() {
           </Form.Select.Option>
         ))}
       </Form.Select>
-      <div style={{ marginTop: '20px' }}>
+      <div style={{ textAlign: 'right', width: '100%' }}>
         <Button style={{ marginRight: 10 }} htmlType='submit'>
           预览
         </Button>

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Tabs, TabPane, Form } from '@douyinfe/semi-ui';
+import { Tabs, TabPane, Form, Button } from '@douyinfe/semi-ui';
 import { IconFile } from '@douyinfe/semi-icons';
 
 const NginxAuto: FC<{
@@ -188,6 +188,11 @@ const NginxAuto: FC<{
             </div>
           </TabPane>
         </Tabs>
+        <div style={{ textAlign: 'right', width: '100%' }}>
+          <Button style={{ marginRight: 10 }} htmlType='submit'>
+            生成
+          </Button>
+        </div>
       </Form>
     </div>
   );
