@@ -7,6 +7,7 @@ import {
   Button,
   Tabs,
 } from '@douyinfe/semi-ui';
+import { IconBackTop } from '@douyinfe/semi-icons';
 import HeaderContainer from './HeaderContainer';
 import InputPlus from './InputPlus';
 
@@ -46,22 +47,30 @@ const responseTabList = [
   {
     tab: '实时响应',
     itemKey: '0',
-    components: <InputPlus />,
+    components: (
+      <HeaderContainer
+        initValue={{
+          code: 0,
+          msg: 'success',
+          data: {},
+        }}
+      />
+    ),
   },
   {
     tab: '请求头',
     itemKey: '1',
-    components: <InputPlus />,
+    components: <div>请求头</div>,
   },
   {
     tab: '响应头',
     itemKey: '2',
-    components: <InputPlus />,
+    components: <div>响应头</div>,
   },
   {
     tab: 'Cookie',
     itemKey: '3',
-    components: <InputPlus />,
+    components: <div>Cookie</div>,
   },
 ];
 
@@ -130,9 +139,7 @@ export const PostTools: FC<{
           activeKey={reqStatus}
           // TODO: 类型约束优化
           tabList={requestTabList as any}
-          tabBarExtraContent={
-            <Button onClick={() => cb('reqDisplay')}>收起</Button>
-          }
+          tabBarExtraContent={<IconBackTop onClick={() => cb('reqDisplay')} />}
           onChange={(active) => cb('req', active)}>
           {reqDisplay && requestTabList[+reqStatus!].components}
         </Tabs>
@@ -140,18 +147,10 @@ export const PostTools: FC<{
           type='card'
           activeKey={resStatus}
           tabList={responseTabList}
-          tabBarExtraContent={
-            <Button onClick={() => cb('resDisplay')}>收起</Button>
-          }>
+          onChange={(active) => cb('res', active)}>
           {resDisplay && responseTabList[+resStatus!].components}
         </Tabs>
       </Section>
-      <Button theme='light' type='primary' style={{ marginRight: 8 }}>
-        保存
-      </Button>
-      <Button theme='light' type='tertiary' style={{ marginRight: 8 }}>
-        取消
-      </Button>
     </Form>
   );
 };

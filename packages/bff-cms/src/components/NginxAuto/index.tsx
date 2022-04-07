@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Tabs, TabPane, Form, Row, Col } from '@douyinfe/semi-ui';
+import { Tabs, TabPane, Form } from '@douyinfe/semi-ui';
 import { IconFile } from '@douyinfe/semi-icons';
 
 const NginxAuto: FC<{

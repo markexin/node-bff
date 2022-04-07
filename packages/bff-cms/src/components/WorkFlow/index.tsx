@@ -114,7 +114,7 @@ export const WorkFlow: FC<{
   // 初始化编辑器注入
   useEffect(() => {
     const width = editRef.current?.clientWidth!;
-    const height = document.body.clientHeight - 90;
+    const height = document.body.clientHeight - 150;
 
     graph.current = new GraphHoc({
       container: editRef.current!,

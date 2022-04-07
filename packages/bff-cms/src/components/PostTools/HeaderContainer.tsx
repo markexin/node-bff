@@ -14,7 +14,7 @@ const HeaderContainer = ({ initValue = {} }: { initValue?: {} }) => {
         string: '#DAA520',
       }}
       width='auto'
-      height='100px'
+      height='150px'
     />
   );
 };

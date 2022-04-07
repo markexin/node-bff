@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from '@douyinfe/semi-ui';
+import { IconBackTop } from '@douyinfe/semi-icons';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { OriginGetListSync } from '../../views/OriginManagement/origin.slice';
 import request from 'utils/request';
@@ -13,6 +14,7 @@ export default function InterfaceForm() {
   const dispatch = useAppDispatch();
   const visible = useAppSelector((state) => state.interfaceSlice.visible);
   const [originList, setOriginList] = useState<OriginGetListSync[]>([]);
+  const [currentHeight, setCurrentHeight] = useState<string>('auto');
 
   useEffect(() => {
     if (visible) {
@@ -21,6 +23,10 @@ export default function InterfaceForm() {
       });
     }
   }, [visible]);
+
+  function handleClose() {
+    setCurrentHeight(currentHeight === 'auto' ? '10px' : 'auto');
+  }
 
   return (
     <Form
@@ -33,7 +39,13 @@ export default function InterfaceForm() {
       style={{
         marginBottom: '20px',
         padding: '20px',
+        height: currentHeight,
+        overflow: 'hidden',
       }}>
+      <IconBackTop
+        onClick={handleClose}
+        style={{ position: 'absolute', right: '30px' }}
+      />
       <Form.Input
         field='apiPath'
         label='规则地址'
@@ -67,6 +79,9 @@ export default function InterfaceForm() {
         ))}
       </Form.Select>
       <div style={{ marginTop: '20px' }}>
+        <Button style={{ marginRight: 10 }} htmlType='submit'>
+          预览
+        </Button>
         <Button style={{ marginRight: 10 }} htmlType='submit'>
           保存
         </Button>

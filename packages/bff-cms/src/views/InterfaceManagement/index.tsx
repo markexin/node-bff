@@ -27,6 +27,19 @@ import {
 
 import './index.scss';
 
+const DEFAULT_CODE = `/*
+  © Microsoft. All rights reserved.
+
+  This library is supported for use in Windows Tailored Apps only.
+
+  Build: 6.2.8100.0 
+  Version: 0.5 
+*/
+module.exports = function (context, next) {
+    next();
+}
+`;
+
 function getColumns(func: Function, reset: Function) {
   // 项目删除
   async function handleDelete(_id: string) {
@@ -106,7 +119,7 @@ function getColumns(func: Function, reset: Function) {
 
 type ViewControlType = 'handler' | 'fetch';
 
-const ProjectManagement: FC = () => {
+const InterfaceManagement: FC = () => {
   const dispatch = useAppDispatch();
   const tableData = useAppSelector((state) => state.interfaceSlice.list);
   const visible = useAppSelector((state) => state.interfaceSlice.visible);
@@ -151,13 +164,13 @@ const ProjectManagement: FC = () => {
               ) : viewControl === 'fetch' ? (
                 <PostTools className='interface-border' />
               ) : (
-                <CodeEditor />
+                <CodeEditor className='interface-border' />
               )}
             </div>
           </Col>
           <Col span={12}>
             {currentOpType === 0 ? (
-              <div className='interface-border'>1</div>
+              <div>test</div>
             ) : (
               <WorkFlow
                 onChange={handleTypeChange}
@@ -171,4 +184,7 @@ const ProjectManagement: FC = () => {
   );
 };
 
-export default ProjectManagement;
+export default InterfaceManagement;
+{
+  /* <CodeEditor editable={false} />; */
+}

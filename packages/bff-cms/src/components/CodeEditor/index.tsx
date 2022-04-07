@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
+// import { nginx } from '@codemirror/legacy-modes/mode/nginx';
 
 const DEFAULT_CODE = `/*
   © Microsoft. All rights reserved.
@@ -16,20 +16,22 @@ module.exports = function (context, next) {
 `;
 
 export const CodeEditor: FC<{
+  editable?: boolean;
   code?: string;
-}> = ({ code }) => {
+  className?: string;
+}> = ({ code, className, editable }) => {
   return (
-    <>
+    <div className={className}>
       <h3>代码编辑器</h3>
       <CodeMirror
         value={code ?? DEFAULT_CODE}
-        height={`${document.body.clientHeight - 140}px`}
+        height={`${document.body.clientHeight - 480}px`}
         theme={'dark'}
-        extensions={[javascript({ jsx: true })]}
+        editable={editable}
         onChange={(value) => {
           console.log('value:', value);
         }}
       />
-    </>
+    </div>
   );
 };
