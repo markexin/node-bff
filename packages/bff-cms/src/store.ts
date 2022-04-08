@@ -4,6 +4,7 @@ import dashbordSlice from './views/DashbordManagement/dashbord.slice';
 import projectSlice from './views/ProjectManagement/project.slice';
 import originSlice from './views/OriginManagement/origin.slice';
 import interfaceSlice from './views/InterfaceManagement/interface.slice';
+import nginxSlice from './components/NginxAuto/nginx.slice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     dashbordSlice,
     originSlice,
     interfaceSlice,
+    nginxSlice,
   },
 });
 

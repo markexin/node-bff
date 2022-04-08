@@ -18,6 +18,8 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import { PostTools } from '@/components/PostTools';
 import { CodeEditor } from '@/components/CodeEditor';
 import request from 'utils/request';
+import nginxDicMap from '@/components/NginxAuto/dicMap';
+import { NginxState } from '@/components/NginxAuto/nginx.slice';
 import {
   change,
   fetchInterface,
@@ -27,18 +29,7 @@ import {
 
 import './index.scss';
 
-const DEFAULT_CODE = `/*
-  © Microsoft. All rights reserved.
-
-  This library is supported for use in Windows Tailored Apps only.
-
-  Build: 6.2.8100.0 
-  Version: 0.5 
-*/
-module.exports = function (context, next) {
-    next();
-}
-`;
+console.log(nginxDicMap, '====');
 
 function getColumns(func: Function, reset: Function) {
   // 项目删除
@@ -117,6 +108,26 @@ function getColumns(func: Function, reset: Function) {
   ];
 }
 
+const parse = (params: NginxState) => {
+  return `server {
+    ${params.ipv4 ? `${nginxDicMap.ipv4(params.port, params.ipv4)}` : ''}
+    ${params.ipv6 ? `${nginxDicMap.ipv6(params.port, params.ipv6)}` : ''}
+    ${nginxDicMap.origin(params.origin)}
+    ${nginxDicMap.path(params.path)}
+
+    # index.html fallback
+    location / {
+      try_files $uri $uri/ /index.html;
+    }
+    
+    # reverse proxy
+    ${nginxDicMap.proxyPassPath(params.proxyPassPath)} {
+      ${nginxDicMap.proxySetHeader(params.proxySetHeader)}
+      ${nginxDicMap.proxyPass(params.proxyPass)}
+    }
+  }`;
+};
+
 type ViewControlType = 'handler' | 'fetch';
 
 const InterfaceManagement: FC = () => {
@@ -126,7 +137,7 @@ const InterfaceManagement: FC = () => {
   const currentOpType = useAppSelector((state) => state.interfaceSlice.type);
   const getTableList = () => dispatch(fetchInterface());
   const [viewControl, setViewControl] = useState<ViewControlType>('fetch');
-  // const [originList, setOriginList] = useState<OriginGetListSync[]>([]);
+  const nginxConfigAst = useAppSelector((state) => state.nginxSlice);
 
   // 弹窗唤起
   function onOpenHandler(id: string) {
@@ -170,7 +181,12 @@ const InterfaceManagement: FC = () => {
           </Col>
           <Col span={12}>
             {currentOpType === 0 ? (
-              <CodeEditor title='Nginx配置可视化' className='interface-border' editable={false} />
+              <CodeEditor
+                title='Nginx配置可视化'
+                className='interface-border'
+                editable={false}
+                code={parse(nginxConfigAst)}
+              />
             ) : (
               <WorkFlow
                 onChange={handleTypeChange}

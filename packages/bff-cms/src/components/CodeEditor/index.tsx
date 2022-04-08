@@ -2,8 +2,7 @@ import React, { FC } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 // import { nginx } from '@codemirror/legacy-modes/mode/nginx';
 
-const DEFAULT_CODE =
-`server {
+const DEFAULT_CODE = `server {
     listen 80;
     server_name example.com;
     root /var/www/example.com;

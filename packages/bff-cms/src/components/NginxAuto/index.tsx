@@ -1,11 +1,17 @@
 import React, { FC } from 'react';
 import { Tabs, TabPane, Form, Button } from '@douyinfe/semi-ui';
 import { IconFile } from '@douyinfe/semi-icons';
+import { useAppDispatch } from '@/store';
+import { update } from './nginx.slice';
 
 const NginxAuto: FC<{
   className: string;
 }> = (props) => {
-  const handleSubmit = () => {};
+  const dispatch = useAppDispatch();
+  // 生成nginx配置
+  const handleSubmit = (params) => {
+    dispatch(update(params));
+  };
   return (
     <div
       className={props.className}
@@ -33,7 +39,7 @@ const NginxAuto: FC<{
             itemKey='1'>
             <div style={{ marginBottom: '10px' }}>
               <Form.Input
-                field='apiPath'
+                field='origin'
                 label='域名'
                 placeholder={'example.com'}
                 labelWidth={'58px'}
@@ -43,7 +49,7 @@ const NginxAuto: FC<{
             </div>
             <div style={{ marginBottom: '10px' }}>
               <Form.Input
-                field='apiPath'
+                field='path'
                 label='路径'
                 placeholder={'/var/www/example.com'}
                 labelWidth={'58px'}
@@ -53,35 +59,17 @@ const NginxAuto: FC<{
             </div>
             <div style={{ marginBottom: '10px' }}>
               <Form.Input
-                field='apiPath'
-                label='文档根'
-                placeholder={'/public'}
+                field='port'
+                label='端口'
+                placeholder={'80'}
                 labelWidth={'58px'}
                 style={{ width: '250px' }}
                 trigger='blur'
               />
             </div>
             <div style={{ marginBottom: '10px' }}>
-              <Form.Checkbox
-                field='apiPath'
-                label='www子域'
-                style={{ width: '250px', marginTop: '6px' }}
-                trigger='blur'>
-                启用（example.com）
-              </Form.Checkbox>
-            </div>
-            <div style={{ marginBottom: '10px' }}>
-              <Form.Checkbox
-                field='apiPath'
-                label='Redirect subdomains'
-                style={{ width: '350px', marginTop: '6px' }}
-                trigger='blur'>
-                启用（*.example.com → example.com）
-              </Form.Checkbox>
-            </div>
-            <div style={{ marginBottom: '10px' }}>
               <Form.Input
-                field='apiPath'
+                field='ipv4'
                 label='IPV4'
                 placeholder={'0.0.0.0'}
                 labelWidth={'58px'}
@@ -91,8 +79,8 @@ const NginxAuto: FC<{
             </div>
             <div style={{ marginBottom: '10px' }}>
               <Form.Input
-                field='apiPath'
-                label='IPV6'
+                field='ipv6'
+                label='ipv6'
                 placeholder={'::'}
                 labelWidth={'58px'}
                 style={{ width: '250px' }}
@@ -105,70 +93,13 @@ const NginxAuto: FC<{
             tab={
               <span>
                 <IconFile />
-                HTTPS
+                Reverse Proxy
               </span>
             }
             itemKey='2'>
             <div>
-              <Form.Checkbox
-                field='apiPath'
-                label='HTTPS'
-                style={{ width: '250px', marginTop: '6px' }}
-                trigger='blur'>
-                启用
-              </Form.Checkbox>
-            </div>
-            <div>
-              <Form.Checkbox
-                field='apiPath'
-                label='HTTP/2'
-                style={{ width: '250px', marginTop: '6px' }}
-                trigger='blur'>
-                启用
-              </Form.Checkbox>
-            </div>
-            <div>
-              <Form.Checkbox
-                field='apiPath'
-                label='定向 HTTPS'
-                style={{ width: '450px', marginTop: '6px' }}
-                trigger='blur'>
-                启用（http://example.com → https://example.com）
-              </Form.Checkbox>
-            </div>
-            <div>
               <Form.Input
-                field='apiPath'
-                label='ssl_certificate'
-                placeholder={'/etc/nginx/ssl/example.com.crt'}
-                labelWidth={'106px'}
-                style={{ width: '250px', marginBottom: '10px' }}
-                trigger='blur'
-              />
-            </div>
-            <div>
-              <Form.Input
-                field='apiPath'
-                label='ssl_certificate_key'
-                placeholder={'/etc/nginx/ssl/example.com.key'}
-                labelWidth={'140px'}
-                style={{ width: '250px' }}
-                trigger='blur'
-              />
-            </div>
-          </TabPane>
-          <TabPane
-            style={{ marginLeft: '20px' }}
-            tab={
-              <span>
-                <IconFile />
-                Reverse proxy
-              </span>
-            }
-            itemKey='3'>
-            <div>
-              <Form.Input
-                field='apiPath'
+                field='proxyPassPath'
                 label='Path'
                 placeholder={'/'}
                 labelWidth={'140px'}
@@ -178,7 +109,17 @@ const NginxAuto: FC<{
             </div>
             <div>
               <Form.Input
-                field='apiPath'
+                field='proxySetHeader'
+                label='proxy_set_header'
+                placeholder={'localhost'}
+                labelWidth={'140px'}
+                style={{ width: '250px', marginBottom: '10px' }}
+                trigger='blur'
+              />
+            </div>
+            <div>
+              <Form.Input
+                field='proxyPass'
                 label='proxy_pass'
                 placeholder={'http://127.0.0.1:3000'}
                 labelWidth={'140px'}
