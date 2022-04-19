@@ -8,7 +8,7 @@ export default {
   // 路径
   path: (params) => `root ${params};`,
   // 端口
-  port: (params) => params,
+  port: (params) => `listen ${params};`,
   // ipv4
   ipv4: (port, ipv4) => `listen ${ipv4}:${port};`,
   // ipv6

@@ -1,1 +1,0 @@
-export DENO_AUTH_TOKENS=rK_WuWuUN3sR8R-F4bPR@git.n.xiaomi.com

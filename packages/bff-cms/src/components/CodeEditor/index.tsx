@@ -27,9 +27,6 @@ export const CodeEditor: FC<{
         height={`${document.body.clientHeight - 480}px`}
         theme={'dark'}
         editable={editable}
-        onChange={(value) => {
-          console.log('value:', value);
-        }}
       />
     </div>
   );

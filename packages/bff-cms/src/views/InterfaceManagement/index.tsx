@@ -19,7 +19,10 @@ import { PostTools } from '@/components/PostTools';
 import { CodeEditor } from '@/components/CodeEditor';
 import request from 'utils/request';
 import nginxDicMap from '@/components/NginxAuto/dicMap';
-import { NginxState } from '@/components/NginxAuto/nginx.slice';
+import {
+  NginxState,
+  interfaceFormState,
+} from '@/components/NginxAuto/nginx.slice';
 import {
   change,
   fetchInterface,
@@ -29,12 +32,10 @@ import {
 
 import './index.scss';
 
-console.log(nginxDicMap, '====');
-
 function getColumns(func: Function, reset: Function) {
   // 项目删除
   async function handleDelete(_id: string) {
-    const { code } = await request.delete(`/api/project/delete/${_id}`);
+    const { code } = await request.delete(`/api/interface/delete/${_id}`);
     if (code === 0) {
       Notification.success({
         duration: 2,
@@ -53,7 +54,7 @@ function getColumns(func: Function, reset: Function) {
   return [
     {
       title: '规则地址',
-      dataIndex: 'apiPath',
+      dataIndex: 'path',
     },
     {
       title: '归属',
@@ -67,13 +68,9 @@ function getColumns(func: Function, reset: Function) {
     {
       title: '状态',
       dataIndex: 'status',
-      render: (item: keyof typeof statusEnum) => {
-        for (const key in statusEnum) {
-          if (statusEnum[key] === item) {
-            return <span>{key}</span>;
-          }
-        }
-      },
+      render: (item: keyof typeof statusEnum) => (
+        <span>{statusEnum[item]}</span>
+      ),
     },
     {
       title: '更新日期',
@@ -92,6 +89,7 @@ function getColumns(func: Function, reset: Function) {
       render: (_id: string) => (
         <>
           <Button onClick={() => func(_id)}>编辑</Button>
+          <Button style={{ marginLeft: '20px' }}>上线</Button>
           <Popconfirm
             title='确定是否要删除此项目？'
             content='此删除将不可逆'
@@ -108,20 +106,26 @@ function getColumns(func: Function, reset: Function) {
   ];
 }
 
-const parse = (params: NginxState) => {
+const parse = (params: NginxState & interfaceFormState) => {
+  let serverNameStr = '';
+  if (params.ipv4) {
+    serverNameStr = `${nginxDicMap.ipv4(params.port, params.ipv4)}`;
+  } else {
+    serverNameStr = `${nginxDicMap.port(params.port)}`;
+  }
   return `server {
-    ${params.ipv4 ? `${nginxDicMap.ipv4(params.port, params.ipv4)}` : ''}
+    ${serverNameStr}
     ${params.ipv6 ? `${nginxDicMap.ipv6(params.port, params.ipv6)}` : ''}
     ${nginxDicMap.origin(params.origin)}
-    ${nginxDicMap.path(params.path)}
+    ${nginxDicMap.path(params.rootPath)}
 
     # index.html fallback
     location / {
       try_files $uri $uri/ /index.html;
     }
-    
+
     # reverse proxy
-    ${nginxDicMap.proxyPassPath(params.proxyPassPath)} {
+    ${nginxDicMap.proxyPassPath(params.path)} {
       ${nginxDicMap.proxySetHeader(params.proxySetHeader)}
       ${nginxDicMap.proxyPass(params.proxyPass)}
     }
@@ -137,7 +141,9 @@ const InterfaceManagement: FC = () => {
   const currentOpType = useAppSelector((state) => state.interfaceSlice.type);
   const getTableList = () => dispatch(fetchInterface());
   const [viewControl, setViewControl] = useState<ViewControlType>('fetch');
-  const nginxConfigAst = useAppSelector((state) => state.nginxSlice);
+  const { interfaceFormState, nginxState } = useAppSelector(
+    (state) => state.nginxSlice,
+  );
 
   // 弹窗唤起
   function onOpenHandler(id: string) {
@@ -169,7 +175,7 @@ const InterfaceManagement: FC = () => {
         <Row gutter={16}>
           <Col span={12}>
             <div className='col-content'>
-              <InterfaceForm />
+              <InterfaceForm currentOpType={currentOpType} />
               {currentOpType === 0 ? (
                 <NginxAuto className='interface-border' />
               ) : viewControl === 'fetch' ? (
@@ -185,7 +191,10 @@ const InterfaceManagement: FC = () => {
                 title='Nginx配置可视化'
                 className='interface-border'
                 editable={false}
-                code={parse(nginxConfigAst)}
+                code={parse({
+                  ...interfaceFormState,
+                  ...nginxState,
+                })}
               />
             ) : (
               <WorkFlow

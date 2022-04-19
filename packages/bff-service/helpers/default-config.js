@@ -1,0 +1,23 @@
+module.exports = {
+  title: 'Express Status',
+  theme: 'default.css',
+  path: '/status',
+  socketPath: '/socket.io',
+  socketInterval: 5,
+  socketRetention: 60,
+  port: null,
+  websocket: null,
+  iframe: false,
+  chartVisibility: {
+    cpu: true,
+    mem: true,
+    load: true,
+    heap: true,
+    eventLoop: true,
+    responseTime: true,
+    rps: true,
+    statusCodes: true,
+  },
+  ignoreStartsWith: '/admin',
+  healthChecks: [],
+};

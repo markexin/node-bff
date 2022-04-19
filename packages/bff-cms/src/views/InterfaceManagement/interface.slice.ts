@@ -14,8 +14,8 @@ export const typeEnum = {
 }
 
 export enum statusEnum {
-  '已上线' = 0,
-  '未上线' = 1,
+  'offline' = '未上线',
+  'online' = '已上线'
 }
 
 export interface InterfaceState {

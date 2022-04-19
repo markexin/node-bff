@@ -3,8 +3,8 @@
  */
  import { Context } from 'koa'
  import { HttpMethod, route } from '../../utils/router-decorator'
- import { InterfaceModel } from '../schemas/interface'
- 
+ import { InterfaceModel, InterfaceSchemaType } from '../schemas/interface'
+
   @route('/interface')
   export default class InterfaceCtrl {
  
@@ -51,8 +51,8 @@
     // 增加
     @route('/create', HttpMethod.POST)
     async create(ctx: Context) {
-      const { apiPath, originId, type, status } = ctx.request.body;
-      if (!apiPath) {
+      const params: InterfaceSchemaType = ctx.request.body;
+      if (!params.path) {
        return ctx.body = {
          code: -1,
          data: {},
@@ -61,11 +61,9 @@
       }
       // todo: 修改人
       const interfaces = new InterfaceModel({
-        apiPath,
-        originId,
-        type,
-        status,
-        updater: '未知'
+        updater: '未知',
+        status: 'offline',
+        ...params,
       })
       try {
        const res = await interfaces.save();
@@ -116,29 +114,29 @@
     // }
  
     // // 删除
-    // @route('/delete/:id', HttpMethod.DELETE)
-    // async delete(ctx: Context) {
-    //   const { id } = ctx.params;
-    //   if (!id) {
-    //    return ctx.body = {
-    //      code: -1,
-    //      data: {},
-    //      msg: "缺少参数：id"
-    //    };
-    //   }
-    //   try {
-    //    const res = await OriginModel.findByIdAndDelete(id);
-    //    ctx.body = {
-    //       code: 0,
-    //       data: res,
-    //       msg: "删除成功~"
-    //     };
-    //   } catch (error: any) {
-    //    ctx.body = {
-    //      code: 0,
-    //      data: {},
-    //      msg: error && error.message
-    //    };
-    //   }
-    // }
+    @route('/delete/:id', HttpMethod.DELETE)
+    async delete(ctx: Context) {
+      const { id } = ctx.params;
+      if (!id) {
+       return ctx.body = {
+         code: -1,
+         data: {},
+         msg: "缺少参数：id"
+       };
+      }
+      try {
+       const res = await InterfaceModel.findByIdAndDelete(id);
+       ctx.body = {
+          code: 0,
+          data: res,
+          msg: "删除成功~"
+        };
+      } catch (error: any) {
+       ctx.body = {
+         code: 0,
+         data: {},
+         msg: error && error.message
+       };
+      }
+    }
   }

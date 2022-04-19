@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form } from '@douyinfe/semi-ui';
+import { Button, Form, Notification } from '@douyinfe/semi-ui';
 import { IconBackTop } from '@douyinfe/semi-icons';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { OriginGetListSync } from '../../views/OriginManagement/origin.slice';
@@ -9,12 +9,16 @@ import {
   typeEnum,
   changeType,
 } from '../../views/InterfaceManagement/interface.slice';
+import { updateFormData } from '../NginxAuto/nginx.slice';
 
-export default function InterfaceForm() {
+export default function InterfaceForm(params: { currentOpType: 0 | 1 }) {
   const dispatch = useAppDispatch();
   const visible = useAppSelector((state) => state.interfaceSlice.visible);
   const [originList, setOriginList] = useState<OriginGetListSync[]>([]);
   const [currentHeight, setCurrentHeight] = useState<string>('auto');
+  const { interfaceFormState, nginxState } = useAppSelector(
+    (state) => state.nginxSlice,
+  );
 
   useEffect(() => {
     if (visible) {
@@ -28,13 +32,37 @@ export default function InterfaceForm() {
     setCurrentHeight(currentHeight === 'auto' ? '10px' : 'auto');
   }
 
+  const handleSubmit = () => {
+    request
+      .post('/api/interface/create', {
+        ...interfaceFormState,
+        ...nginxState,
+      })
+      .then((res) => {
+        const { code, msg } = res;
+        if (code === 0) {
+          dispatch(change(''));
+          Notification.success({
+            duration: 2,
+            position: 'top',
+            title: msg || '新增成功！',
+          });
+        }
+      });
+  };
+
+  const handleChange = ({ values }: any) => {
+    dispatch(updateFormData(values));
+  };
+
   return (
     <Form
       labelPosition='left'
-      // onSubmit={handleSubmit}
+      onSubmit={handleSubmit}
       initValues={{
         type: 0,
       }}
+      onChange={handleChange}
       className='interface-border'
       style={{
         marginBottom: '20px',
@@ -47,7 +75,7 @@ export default function InterfaceForm() {
         style={{ position: 'absolute', right: '30px' }}
       />
       <Form.Input
-        field='apiPath'
+        field='path'
         label='规则地址'
         rules={[{ required: true, message: '规则地址为必填项' }]}
         style={{ width: '250px' }}
@@ -79,9 +107,11 @@ export default function InterfaceForm() {
         ))}
       </Form.Select>
       <div style={{ textAlign: 'right', width: '100%' }}>
-        <Button style={{ marginRight: 10 }} htmlType='submit'>
-          预览
-        </Button>
+        {!params.currentOpType ? (
+          <Button style={{ marginRight: 10 }} htmlType='submit'>
+            预览
+          </Button>
+        ) : null}
         <Button style={{ marginRight: 10 }} htmlType='submit'>
           保存
         </Button>
