@@ -16,6 +16,10 @@ export default defineConfig({
         replacement: resolve(__dirname, 'src'),
       },
       {
+        find: 'config',
+        replacement: resolve(__dirname, 'config'),
+      },
+      {
         find: 'utils',
         replacement: resolve(__dirname, 'utils'),
       },

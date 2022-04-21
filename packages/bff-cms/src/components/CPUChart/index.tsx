@@ -11,6 +11,14 @@ const CPUChart = () => {
       percent: 0.15,
       width: 180,
       height: 180,
+      statistic: {
+        title: {
+          formatter: () => 'Heap Usage',
+          style: ({ percent }) => ({
+            fill: percent > 0.65 ? 'white' : 'rgba(44,53,66,0.85)',
+          }),
+        },
+      },
       outline: {
         border: 4,
         distance: 8,

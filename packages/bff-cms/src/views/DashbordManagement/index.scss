@@ -12,6 +12,7 @@
             width: 540px;
             display: flex;
             padding: 40px 20px;
+            
             li {
                 list-style: none;
                 flex: 1;
@@ -20,8 +21,16 @@
         & > div  {
             @include borderShadow();
             flex: 1;
-            margin: 16px 20px;
             padding: 40px 20px;
+            margin-bottom: 20px;
+        }
+
+        & > div:nth-child(odd) {
+            margin-right: 10px;
+        }
+
+        & > div:nth-child(even) {
+            margin-left: 10px;
         }
     }
 

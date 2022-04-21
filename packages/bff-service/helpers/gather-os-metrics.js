@@ -30,6 +30,7 @@ module.exports = (io, config) => {
 
     // Convert from B to MB
     stat.memory = stat.memory / 1024 / 1024;
+    // stat.memory = stat.memory;
     stat.load = os.loadavg();
     stat.timestamp = Date.now();
     stat.heap = v8.getHeapStatistics();
@@ -43,6 +44,7 @@ module.exports = (io, config) => {
     }
 
     // socket emit
-    io.emit('esm_stats', stat);
+    console.log(stat);
+    io.send(JSON.stringify(stat));
   });
 };

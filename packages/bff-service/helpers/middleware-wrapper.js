@@ -9,31 +9,11 @@ const healthChecker = require('./health-checker');
 
 const middlewareWrapper = config => {
   const validatedConfig = validate(config);
-  // const bodyClasses = Object.keys(validatedConfig.chartVisibility)
-  //   .reduce((accumulator, key) => {
-  //     if (validatedConfig.chartVisibility[key] === false) {
-  //       accumulator.push(`hide-${key}`);
-  //     }
-  //     return accumulator;
-  //   }, [])
-  //   .join(' ');
-
   const data = {
     title: validatedConfig.title,
     port: validatedConfig.port,
     socketPath: validatedConfig.socketPath,
-    // bodyClasses,
-    // script: fs.readFileSync(path.join(__dirname, '/public/javascripts/app.js')),
-    // style: fs.readFileSync(path.join(__dirname, '/public/stylesheets/', validatedConfig.theme))
   };
-
-  console.log(data, '<---- data ----');
-
-  // const htmlTmpl = fs
-  //   .readFileSync(path.join(__dirname, '/public/index.html'))
-  //   .toString();
-
-  // const render = Handlebars.compile(htmlTmpl);
 
   const middleware = (req, res, next) => {
     socketIoInit(req.socket.server, validatedConfig);
@@ -57,9 +37,9 @@ const middlewareWrapper = config => {
       });
     } else {
       if (!req.path.startsWith(validatedConfig.ignoreStartsWith)) {
-        // onHeaders(res, () => {
-        //   onHeadersListener(res.statusCode, startTime, validatedConfig.spans);
-        // });
+        onHeaders(res, () => {
+          // onHeadersListener(res.statusCode, startTime, validatedConfig);
+        });
       }
       next();
     }

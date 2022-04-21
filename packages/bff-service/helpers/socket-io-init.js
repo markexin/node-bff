@@ -3,13 +3,6 @@ const gatherOsMetrics = require('./gather-os-metrics');
 
 let io;
 
-const addSocketEvents = (socket, config) => {
-  socket.emit('esm_start', config.spans);
-  socket.on('esm_change', () => {
-    socket.emit('esm_start', config.spans);
-  });
-};
-
 module.exports = (server, config) => {
   if (io === null || io === undefined) {
     if (config.websocket !== null) {
@@ -19,33 +12,18 @@ module.exports = (server, config) => {
         server
       });
     }
-
+    let interval;
+    // 收到来自客户端的连接请求后，开始给客户端推消息
     io.on('connection', socket => {
-      if (config.authorize) {
-        // config
-        //   .authorize(socket)
-        //   .then(authorized => {
-        //     if (!authorized) socket.disconnect('unauthorized');
-        //     else addSocketEvents(socket, config);
-        //   })
-        //   .catch(() => socket.disconnect('unauthorized'));
-      } else {
-        addSocketEvents(socket, config);
+      console.log("----客户端建立socket连接----");
+      socket.on('message', function message(data) {
+        console.log('received: %s', data);
+      });
+      if (interval) {
+        clearInterval(interval);
       }
+      // 轮询上报
+      interval = setInterval(() => gatherOsMetrics(socket, config), config.socketInterval * 1000);
     });
-
-    // 轮询上报
-    const interval = setInterval(() => gatherOsMetrics(io, config), config.socketInterval * 1000);
-    // Don't keep Node.js process up
-    // interval.unref();
-
-    // config.spans.forEach(span => {
-    //   span.os = [];
-    //   span.responses = [];
-    //   const interval = setInterval(() => gatherOsMetrics(io, span), span.interval * 1000);
-
-    //   // Don't keep Node.js process up
-    //   interval.unref();
-    // });
   }
 };

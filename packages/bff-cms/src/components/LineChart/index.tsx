@@ -15,7 +15,6 @@ const LineChart = () => {
           xField: 'Date',
           yField: 'scales',
           xAxis: {
-            // type: 'timeCat',
             tickCount: 5,
           },
         });
