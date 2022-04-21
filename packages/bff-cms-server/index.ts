@@ -1,13 +1,10 @@
 import Koa from 'koa'
 import path from 'path'
-import http from 'http'
-// import wss from './utils/ws';
 import bodyParser from 'koa-bodyparser'
 import { handleErr } from './utils/error-handler'
 import { load } from './utils/router-decorator'
 import mongoose from 'mongoose'
 import config from './src/config/staging';
-
 
 // 抓取全局异常
 process.on('uncaughtException', function (err) {
@@ -31,8 +28,6 @@ async function start () {
     try {
         // 数据链路
         await mongoose.connect(config.mongodbConfig);
-        // socket链路
-        // await new wss(server);
     } catch (error) {
         console.log(error);
     }
@@ -40,4 +35,3 @@ async function start () {
 }
 
 start();
-

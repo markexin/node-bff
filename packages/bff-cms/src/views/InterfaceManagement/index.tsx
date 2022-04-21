@@ -12,13 +12,14 @@ import {
 import moment from 'moment';
 import { FormSearch } from './FormSearch';
 import { WorkFlow } from '@/components/WorkFlow';
-import NginxAuto from '@/components/NginxAuto';
+// import NginxAuto from '@/components/NginxAuto';
 import InterfaceForm from '@/components/InterfaceForm';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { PostTools } from '@/components/PostTools';
-import { CodeEditor } from '@/components/CodeEditor';
+import { Editor } from '@/components/CodeEditor';
 import request from 'utils/request';
 import nginxDicMap from '@/components/NginxAuto/dicMap';
+import '../../hooks/userWorker';
 import {
   NginxState,
   interfaceFormState,
@@ -113,23 +114,24 @@ const parse = (params: NginxState & interfaceFormState) => {
   } else {
     serverNameStr = `${nginxDicMap.port(params.port)}`;
   }
-  return `server {
-    ${serverNameStr}
-    ${params.ipv6 ? `${nginxDicMap.ipv6(params.port, params.ipv6)}` : ''}
-    ${nginxDicMap.origin(params.origin)}
-    ${nginxDicMap.path(params.rootPath)}
+  return `
+server {
+  ${serverNameStr}
+  ${params.ipv6 ? `${nginxDicMap.ipv6(params.port, params.ipv6)}` : ''}
+  ${nginxDicMap.origin(params.origin)}
+  ${nginxDicMap.path(params.rootPath)}
 
-    # index.html fallback
-    location / {
-      try_files $uri $uri/ /index.html;
-    }
+  # index.html fallback
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
 
-    # reverse proxy
-    ${nginxDicMap.proxyPassPath(params.path)} {
-      ${nginxDicMap.proxySetHeader(params.proxySetHeader)}
-      ${nginxDicMap.proxyPass(params.proxyPass)}
-    }
-  }`;
+  # reverse proxy
+  ${nginxDicMap.proxyPassPath(params.path)} {
+    ${nginxDicMap.proxySetHeader(params.proxySetHeader)}
+    ${nginxDicMap.proxyPass(params.proxyPass)}
+  }
+}`;
 };
 
 type ViewControlType = 'handler' | 'fetch';
@@ -176,21 +178,24 @@ const InterfaceManagement: FC = () => {
           <Col span={12}>
             <div className='col-content'>
               <InterfaceForm currentOpType={currentOpType} />
-              {currentOpType === 0 ? (
-                <NginxAuto className='interface-border' />
-              ) : viewControl === 'fetch' ? (
-                <PostTools className='interface-border' />
+              {viewControl === 'handler' ? (
+                <Editor
+                  height={'52vh'}
+                  className='interface-border'
+                  code={'module.export = function (context, next) {\n\n}'}
+                  language={'javascript'}
+                />
               ) : (
-                <CodeEditor className='interface-border' />
+                <PostTools className='interface-border' />
               )}
             </div>
           </Col>
           <Col span={12}>
             {currentOpType === 0 ? (
-              <CodeEditor
+              <Editor
                 title='Nginx配置可视化'
                 className='interface-border'
-                editable={false}
+                language={'nginx'}
                 code={parse({
                   ...interfaceFormState,
                   ...nginxState,
