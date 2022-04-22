@@ -1,5 +1,5 @@
 node_modules
 **/node_modules
 **/env
-packages/bff-cms-server/config/*
+**/config
 packages/bff-cms-server/dist/*
