@@ -4,6 +4,8 @@
  import { Context } from 'koa'
  import { HttpMethod, route } from '../../utils/router-decorator'
  import { InterfaceModel, InterfaceSchemaType } from '../schemas/interface'
+ import { spawn } from 'child_process'
+ import { NGINX_BIN_PATH } from '../../config'
 
   @route('/interface')
   export default class InterfaceCtrl {
@@ -139,4 +141,69 @@
        };
       }
     }
+
+     // 检查nginx配置
+   @route('/check/nginx', HttpMethod.GET)
+   async check(ctx: Context) {
+
+    const std = async () => new Promise(function (resolve) {
+      const nginx = spawn(`${NGINX_BIN_PATH}/nginx`, ['-t']);
+      const res: string[] = [];
+      nginx.stdout.on('data', (data) => {
+        res.push(`${data}`);
+      })
+      nginx.stderr.on('data', (data) => {
+        res.push(`${data}`);
+      })
+      nginx.on('close', (code) => {
+        resolve(res);
+      })
+    })
+
+    try {
+      const res: any = await std() || [];
+      if (res[1].includes('successful')) {
+        ctx.body = {
+          code: 0,
+          data: await std(),
+          msg: "检验成功~"
+        };
+      } else {
+        ctx.body = {
+          code: -1,
+          data: await std(),
+          msg: "检验失败~"
+        };
+      }
+    } catch (error: any) {
+      ctx.body = {
+        code: -1,
+        data: {},
+        msg: error && error.message
+      }; 
+    }
+    
+    //  const { id } = ctx.params;
+    //  if (!id) {
+    //   return ctx.body = {
+    //     code: -1,
+    //     data: {},
+    //     msg: "缺少参数：id"
+    //   };
+    //  }
+    //  try {
+    //   const res = await ProjectModel.findByIdAndDelete(id);
+    //   ctx.body = {
+    //      code: 0,
+    //      data: res,
+    //      msg: "删除成功~"
+    //    };
+    //  } catch (error: any) {
+    //   ctx.body = {
+    //     code: 0,
+    //     data: {},
+    //     msg: error && error.message
+    //   };
+    //  }
+   }
   }

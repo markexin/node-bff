@@ -3,7 +3,7 @@ module.exports = {
   theme: 'default.css',
   path: '/status',
   socketPath: '/socket.io',
-  socketInterval: 5,
+  socketInterval: 1,
   socketRetention: 60,
   port: null,
   websocket: null,

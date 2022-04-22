@@ -34,9 +34,6 @@ const AreaChart: FC<{
       },
       xAxis: {
         range: [0, 1],
-        title: {
-          text: '时间',
-        },
         label: {
           formatter: (value) => {
             return moment(+value).format('hh:mm:ss');

@@ -178,7 +178,7 @@ const InterfaceManagement: FC = () => {
           <Col span={12}>
             <div className='col-content'>
               <InterfaceForm currentOpType={currentOpType} />
-              {viewControl === 'handler' ? (
+              {viewControl === 'handler' && currentOpType === 1 ? (
                 <Editor
                   height={'52vh'}
                   className='interface-border'
