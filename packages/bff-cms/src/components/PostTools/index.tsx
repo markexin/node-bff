@@ -107,7 +107,7 @@ function useTabsController() {
     reqStatus: reqTab,
     resStatus: resTab,
     reqDisplay,
-    resDisplay: !reqDisplay,
+    resDisplay: reqDisplay,
   };
 }
 
@@ -117,7 +117,7 @@ export const PostTools: FC<{
   const { reqStatus, resStatus, reqDisplay, resDisplay, cb } =
     useTabsController();
   return (
-    <Form className={className} style={{ maxHeight: '50%' }}>
+    <Form className={className} style={{ height: '80vh' }}>
       <Section text={'PostSuperMan'}>
         <Input style={{ margin: '10px 0' }} placeholder={'请输入接口名称'} />
         <InputGroup

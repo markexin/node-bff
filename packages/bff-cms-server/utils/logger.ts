@@ -7,7 +7,7 @@ import fs from 'fs';
 import _ from 'lodash';
 const { format } = winston;
 const { timestamp, printf } = format;
-import { LOG_DIR } from '../config';
+import { LOG_DIR } from '../config/config';
 
 let LOG_DIR_ARRAY = [path.resolve('/opt/web'), path.resolve(LOG_DIR)];
 

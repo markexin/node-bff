@@ -18,12 +18,12 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import { PostTools } from '@/components/PostTools';
 import { Editor } from '@/components/CodeEditor';
 import request from 'utils/request';
-import nginxDicMap from '@/components/NginxAuto/dicMap';
+// import nginxDicMap from '@/components/NginxAuto/dicMap';
 import '../../hooks/userWorker';
-import {
-  NginxState,
-  interfaceFormState,
-} from '@/components/NginxAuto/nginx.slice';
+// import {
+//   NginxState,
+//   interfaceFormState,
+// } from '@/components/NginxAuto/nginx.slice';
 import {
   change,
   fetchInterface,
@@ -107,34 +107,49 @@ function getColumns(func: Function, reset: Function) {
   ];
 }
 
-const parse = (params: NginxState & interfaceFormState) => {
-  let serverNameStr = '';
-  if (params.ipv4) {
-    serverNameStr = `${nginxDicMap.ipv4(params.port, params.ipv4)}`;
-  } else {
-    serverNameStr = `${nginxDicMap.port(params.port)}`;
-  }
-  return `
-server {
-  ${serverNameStr}
-  ${params.ipv6 ? `${nginxDicMap.ipv6(params.port, params.ipv6)}` : ''}
-  ${nginxDicMap.origin(params.origin)}
-  ${nginxDicMap.path(params.rootPath)}
+// const parse = (params: NginxState & interfaceFormState) => {
+//   let serverNameStr = '';
+//   if (params.ipv4) {
+//     serverNameStr = `${nginxDicMap.ipv4(params.port, params.ipv4)}`;
+//   } else {
+//     serverNameStr = `${nginxDicMap.port(params.port)}`;
+//   }
+//   return `
+// server {
+//   ${serverNameStr}
+//   ${params.ipv6 ? `${nginxDicMap.ipv6(params.port, params.ipv6)}` : ''}
+//   ${nginxDicMap.origin(params.origin)}
+//   ${nginxDicMap.path(params.rootPath)}
 
-  # index.html fallback
-  location / {
-    try_files $uri $uri/ /index.html;
-  }
+//   # index.html fallback
+//   location / {
+//     try_files $uri $uri/ /index.html;
+//   }
 
-  # reverse proxy
-  ${nginxDicMap.proxyPassPath(params.path)} {
-    ${nginxDicMap.proxySetHeader(params.proxySetHeader)}
-    ${nginxDicMap.proxyPass(params.proxyPass)}
-  }
-}`;
-};
+//   # reverse proxy
+//   ${nginxDicMap.proxyPassPath(params.path)} {
+//     ${nginxDicMap.proxySetHeader(params.proxySetHeader)}
+//     ${nginxDicMap.proxyPass(params.proxyPass)}
+//   }
+// }`;
+// };
 
 type ViewControlType = 'handler' | 'fetch';
+
+const proxyOtherConfig = [
+  {
+    type: 'INPUT',
+    field: 'proxyPath',
+    label: '代理地址',
+    rules: [{ required: true, message: '代理地址为必填项' }],
+    style: { width: '250px' },
+  },
+  {
+    type: 'SWITCH',
+    field: 'proxyHeader',
+    label: 'Proxy Header',
+  },
+];
 
 const InterfaceManagement: FC = () => {
   const dispatch = useAppDispatch();
@@ -143,9 +158,9 @@ const InterfaceManagement: FC = () => {
   const currentOpType = useAppSelector((state) => state.interfaceSlice.type);
   const getTableList = () => dispatch(fetchInterface());
   const [viewControl, setViewControl] = useState<ViewControlType>('fetch');
-  const { interfaceFormState, nginxState } = useAppSelector(
-    (state) => state.nginxSlice,
-  );
+  // const { interfaceFormState, nginxState } = useAppSelector(
+  //   (state) => state.nginxSlice,
+  // );
 
   // 弹窗唤起
   function onOpenHandler(id: string) {
@@ -177,7 +192,7 @@ const InterfaceManagement: FC = () => {
         <Row gutter={16}>
           <Col span={12}>
             <div className='col-content'>
-              <InterfaceForm currentOpType={currentOpType} />
+              <InterfaceForm showFooter={true} currentOpType={currentOpType} />
               {viewControl === 'handler' && currentOpType === 1 ? (
                 <Editor
                   height={'52vh'}
@@ -186,22 +201,23 @@ const InterfaceManagement: FC = () => {
                   language={'javascript'}
                 />
               ) : (
-                <PostTools className='interface-border' />
+                <InterfaceForm showFooter={false} config={proxyOtherConfig} />
               )}
             </div>
           </Col>
           <Col span={12}>
             {currentOpType === 0 ? (
-              <Editor
-                title='Nginx配置可视化'
-                className='interface-border'
-                language={'nginx'}
-                code={parse({
-                  ...interfaceFormState,
-                  ...nginxState,
-                })}
-              />
+              <PostTools className='interface-border' />
             ) : (
+              // <Editor
+              //   title='Nginx配置可视化'
+              //   className='interface-border'
+              //   language={'nginx'}
+              //   code={parse({
+              //     ...interfaceFormState,
+              //     ...nginxState,
+              //   })}
+              // />
               <WorkFlow
                 onChange={handleTypeChange}
                 className='interface-border'

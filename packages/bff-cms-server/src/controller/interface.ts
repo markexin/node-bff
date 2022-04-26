@@ -5,7 +5,7 @@
  import { HttpMethod, route } from '../../utils/router-decorator'
  import { InterfaceModel, InterfaceSchemaType } from '../schemas/interface'
  import { spawn } from 'child_process'
- import { NGINX_BIN_PATH } from '../../config'
+ import { NGINX_BIN_PATH } from '../../config/config'
 
   @route('/interface')
   export default class InterfaceCtrl {
@@ -142,7 +142,7 @@
       }
     }
 
-     // 检查nginx配置
+    // 检查nginx配置
    @route('/check/nginx', HttpMethod.GET)
    async check(ctx: Context) {
 

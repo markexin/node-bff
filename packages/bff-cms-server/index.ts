@@ -4,7 +4,7 @@ import bodyParser from 'koa-bodyparser'
 import { handleErr } from './utils/error-handler'
 import { load } from './utils/router-decorator'
 import mongoose from 'mongoose'
-import { MONGODB_CONFIG } from './config';
+import { MONGODB_CONFIG } from './config/config';
 
 // 抓取全局异常
 process.on('uncaughtException', function (err) {
