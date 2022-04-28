@@ -23,6 +23,8 @@ export interface InterfaceState {
   id: string;
   type: 0 | 1;
   list: any[];
+  proxyHeader: boolean;
+  proxyPath: string;
 }
 
 // Define the initial state using that type
@@ -30,6 +32,8 @@ const initialState: InterfaceState = {
   visible: false,
   id: '',
   type: 0,
+  proxyPath: '',
+  proxyHeader: false,
   list: [],
 };
 
@@ -55,6 +59,9 @@ export const interfaceSlice = createSlice({
     changeType: (state, action) => {
       state.type = action.payload;
       return state;
+    },
+    formChange: (state, action) => {
+      return Object.assign(state, action.payload);
     }
   },
   extraReducers: (builder) => {
@@ -66,6 +73,6 @@ export const interfaceSlice = createSlice({
   },
 });
 
-export const { change, changeType } = interfaceSlice.actions;
+export const { change, changeType, formChange } = interfaceSlice.actions;
 
 export default interfaceSlice.reducer;

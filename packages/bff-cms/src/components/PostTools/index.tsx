@@ -116,21 +116,57 @@ export const PostTools: FC<{
 }> = ({ className }) => {
   const { reqStatus, resStatus, reqDisplay, resDisplay, cb } =
     useTabsController();
+  const [formData, setFormData] = useState<{
+    apiName: string;
+    method: string;
+    apiPath: string;
+  }>({
+    apiName: '',
+    method: 'GET',
+    apiPath: '',
+  });
+
+  const handleFormChange = (key, value) => {
+    setFormData({ ...formData, ...{ [key]: value } });
+  };
+
+  const handleSubmit = () => {
+    console.log(formData);
+  };
+
   return (
     <Form className={className} style={{ height: '80vh' }}>
       <Section text={'PostSuperMan'}>
-        <Input style={{ margin: '10px 0' }} placeholder={'请输入接口名称'} />
+        <Input
+          value={formData?.apiName}
+          style={{ margin: '10px 0' }}
+          onChange={handleFormChange.bind(null, 'apiName')}
+          placeholder={'请输入接口名称'}
+        />
         <InputGroup
           style={{ display: 'flex', alignItems: 'end', margin: '0 0 10px 0' }}>
-          <Select style={{ flex: 1 }} defaultValue='GET'>
+          <Select
+            style={{ flex: 1 }}
+            defaultValue='GET'
+            onChange={handleFormChange.bind(null, 'method')}
+            value={formData?.method}>
             {methods.map((m) => (
               <Select.Option value={m} key={m}>
                 {m}
               </Select.Option>
             ))}
           </Select>
-          <Input style={{ flex: 5 }} placeholder={'请输入接口地址'} />
-          <Button style={{ flex: 1 }} theme='solid' type='primary'>
+          <Input
+            style={{ flex: 5 }}
+            onChange={handleFormChange.bind(null, 'apiPath')}
+            placeholder={'请输入接口地址'}
+            value={formData?.apiPath}
+          />
+          <Button
+            onClick={handleSubmit}
+            style={{ flex: 1 }}
+            theme='solid'
+            type='primary'>
             测试发送
           </Button>
         </InputGroup>

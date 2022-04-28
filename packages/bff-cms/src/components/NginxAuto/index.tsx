@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Tabs, TabPane, Form } from '@douyinfe/semi-ui';
 import { IconFile } from '@douyinfe/semi-icons';
 import { useAppDispatch } from '@/store';
-import { updateNginxData } from './nginx.slice';
+import { updateFormData } from './nginx.slice';
 
 const NginxAuto: FC<{
   className: string;
@@ -10,7 +10,7 @@ const NginxAuto: FC<{
   const dispatch = useAppDispatch();
   // 生成nginx配置
   const handleSubmit = ({ values }: any) => {
-    dispatch(updateNginxData(values));
+    dispatch(updateFormData(values));
   };
   return (
     <div

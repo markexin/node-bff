@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Notification } from '@douyinfe/semi-ui';
+import { Button, Form } from '@douyinfe/semi-ui';
 import { IconBackTop } from '@douyinfe/semi-icons';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { OriginGetListSync } from '../../views/OriginManagement/origin.slice';
@@ -8,8 +8,8 @@ import {
   change,
   typeEnum,
   changeType,
+  formChange,
 } from '../../views/InterfaceManagement/interface.slice';
-import { updateFormData } from '../NginxAuto/nginx.slice';
 
 interface DefaultConfigP {
   type: string;
@@ -39,9 +39,7 @@ export default function InterfaceForm(params: {
   const visible = useAppSelector((state) => state.interfaceSlice.visible);
   const [originList, setOriginList] = useState<OriginGetListSync[]>([]);
   const [currentHeight, setCurrentHeight] = useState<string>('auto');
-  const { interfaceFormState, nginxState } = useAppSelector(
-    (state) => state.nginxSlice,
-  );
+  const interfaceFormState = useAppSelector((state) => state.interfaceSlice);
 
   // 默认配置
   const defaultConfig: DefaultConfigP[] = [
@@ -98,26 +96,28 @@ export default function InterfaceForm(params: {
   }
 
   const handleSubmit = () => {
-    request
-      .post('/api/interface/create', {
-        ...interfaceFormState,
-        ...nginxState,
-      })
-      .then((res) => {
-        const { code, msg } = res;
-        if (code === 0) {
-          dispatch(change(''));
-          Notification.success({
-            duration: 2,
-            position: 'top',
-            title: msg || '新增成功！',
-          });
-        }
-      });
+    console.log(interfaceFormState);
+    // request
+    //   .post('/api/interface/create', {
+    //     ...interfaceFormState,
+    //     ...nginxState,
+    //   })
+    //   .then((res) => {
+    //     const { code, msg } = res;
+    //     if (code === 0) {
+    //       dispatch(change(''));
+    //       Notification.success({
+    //         duration: 2,
+    //         position: 'top',
+    //         title: msg || '新增成功！',
+    //       });
+    //     }
+    //   });
   };
 
   const handleChange = ({ values }: any) => {
-    dispatch(updateFormData(values));
+    dispatch(formChange(values));
+    // setCurrent(values);
   };
 
   return (
