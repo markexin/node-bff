@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.26.1",
     "debug": "^4.3.4",
     "event-loop-stats": "^1.4.1",
     "express": "^4.17.3",

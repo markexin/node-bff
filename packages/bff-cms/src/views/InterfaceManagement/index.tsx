@@ -192,7 +192,11 @@ const InterfaceManagement: FC = () => {
         <Row gutter={16}>
           <Col span={12}>
             <div className='col-content'>
-              <InterfaceForm showFooter={true} currentOpType={currentOpType} />
+              <InterfaceForm
+                keyPrefix={'top'}
+                showFooter={true}
+                currentOpType={currentOpType}
+              />
               {viewControl === 'handler' && currentOpType === 1 ? (
                 <Editor
                   height={'52vh'}
@@ -201,7 +205,11 @@ const InterfaceManagement: FC = () => {
                   language={'javascript'}
                 />
               ) : (
-                <InterfaceForm showFooter={false} config={proxyOtherConfig} />
+                <InterfaceForm
+                  keyPrefix={'bottom'}
+                  showFooter={false}
+                  config={proxyOtherConfig}
+                />
               )}
             </div>
           </Col>

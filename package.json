@@ -2,11 +2,8 @@
   "name": "node-bff",
   "private": true,
   "scripts": {
-    "cms": "lerna run --parallel cms",
-    "cms:server": "lerna run --parallel cms-server",
-    "debug:service": "lerna run --parallel service-debug"
-  },
-  "devDependencies": {
-    "lerna": "^4.0.0"
+    "start:bc": "cd packages/bff-cms && npm run cms",
+    "start:bs": "cd packages/bff-service && nodemon app.js",
+    "start:bcs": "cd packages/bff-cms-server && nodemon ./index.ts"
   }
 }

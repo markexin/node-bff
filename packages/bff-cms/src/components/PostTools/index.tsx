@@ -8,40 +8,11 @@ import {
   Tabs,
 } from '@douyinfe/semi-ui';
 import { IconBackTop } from '@douyinfe/semi-icons';
+import request from 'utils/request';
 import HeaderContainer from './HeaderContainer';
 import InputPlus from './InputPlus';
 
 const { Section } = Form;
-
-const requestTabList = [
-  {
-    tab: 'Header',
-    itemKey: '0',
-    components: (
-      <HeaderContainer
-        initValue={{
-          'x-postsuper-id': 'super',
-        }}
-      />
-    ),
-  },
-  {
-    tab: 'Query',
-    itemKey: '1',
-    components: <InputPlus />,
-  },
-  {
-    tab: 'Body',
-    itemKey: '2',
-    components: (
-      <HeaderContainer
-        initValue={{
-          test: 'welcome to PostSuperMan !',
-        }}
-      />
-    ),
-  },
-];
 
 const responseTabList = [
   {
@@ -130,10 +101,48 @@ export const PostTools: FC<{
     setFormData({ ...formData, ...{ [key]: value } });
   };
 
-  const handleSubmit = () => {
-    console.log(formData);
+  const handleSubmit = async () => {
+    const { code } = await request.post('/api/interface/test/api', formData);
   };
 
+  const handleChange = (value) => {
+    setFormData({
+      ...formData,
+      ...value,
+    });
+  };
+
+  const requestTabList = [
+    {
+      tab: 'Header',
+      itemKey: '0',
+      components: (
+        <HeaderContainer
+          onChange={(value) => handleChange({ header: value })}
+          initValue={{
+            'x-postsuper-id': 'super',
+          }}
+        />
+      ),
+    },
+    {
+      tab: 'Query',
+      itemKey: '1',
+      components: <InputPlus onChange={handleChange} />,
+    },
+    {
+      tab: 'Body',
+      itemKey: '2',
+      components: (
+        <HeaderContainer
+          onChange={(value) => handleChange({ bodyContent: value })}
+          initValue={{
+            test: 'welcome to PostSuperMan !',
+          }}
+        />
+      ),
+    },
+  ];
   return (
     <Form className={className} style={{ height: '80vh' }}>
       <Section text={'PostSuperMan'}>
@@ -174,6 +183,7 @@ export const PostTools: FC<{
           type='card'
           activeKey={reqStatus}
           // TODO: 类型约束优化
+          keepDOM={true}
           tabList={requestTabList as any}
           tabBarExtraContent={<IconBackTop onClick={() => cb('reqDisplay')} />}
           onChange={(active) => cb('req', active)}>

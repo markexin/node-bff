@@ -31,6 +31,7 @@ interface Rule {
 }
 
 export default function InterfaceForm(params: {
+  keyPrefix: string;
   currentOpType?: 0 | 1;
   showFooter?: boolean;
   config?: DefaultConfigP[];
@@ -143,7 +144,7 @@ export default function InterfaceForm(params: {
         if (item.type === 'INPUT') {
           return (
             <Form.Input
-              key={i}
+              key={`${params.keyPrefix}_${i}`}
               field={item.field}
               label={item.label}
               rules={item.rules}
@@ -155,6 +156,7 @@ export default function InterfaceForm(params: {
         if (item.type === 'SELECT') {
           return (
             <Form.Select
+              key={`${params.keyPrefix}_${i}`}
               label={item.label}
               field={item.field}
               rules={item.rules}
@@ -167,6 +169,7 @@ export default function InterfaceForm(params: {
         if (item.type === 'SWITCH') {
           return (
             <Form.Switch
+              key={`${params.keyPrefix}_${i}`}
               label={item.label}
               field={item.field}
               // defaultChecked

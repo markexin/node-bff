@@ -17,6 +17,6 @@
                 "debug:service"
             ],
             "port": 5858
-        }
+        },
     ]
 }

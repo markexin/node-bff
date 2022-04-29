@@ -2,6 +2,7 @@
  * 项目管理
  */
  import { Context } from 'koa'
+//  import * as fetch from 'node-fetch'
  import { HttpMethod, route } from '../../utils/router-decorator'
  import { InterfaceModel, InterfaceSchemaType } from '../schemas/interface'
  import { spawn } from 'child_process'
@@ -133,6 +134,37 @@
           data: res,
           msg: "删除成功~"
         };
+      } catch (error: any) {
+       ctx.body = {
+         code: 0,
+         data: {},
+         msg: error && error.message
+       };
+      }
+    }
+
+    // 测试请求
+    @route('/test/api', HttpMethod.POST)
+    async test(ctx: Context) {
+      const params = ctx.request.body;
+      if (!params.apiPath || !params.method) {
+       return ctx.body = {
+         code: -1,
+         data: {},
+         msg: "缺少参数"
+       };
+      }
+      try {
+        // const response = await fetch(params.apiPath, {
+        //   method: params.method, 
+        //   body: params.bodyContent
+        // });
+        // const data = await response.json();
+        // ctx.body = {
+        //   code: 0,
+        //   data: data,
+        //   msg: 'success'
+        // };
       } catch (error: any) {
        ctx.body = {
          code: 0,

@@ -24,7 +24,7 @@
     "@utils": "./utils"
   },
   "scripts": {
-    "dev": "tsc -w"
+    "tsc": "tsc -w"
   },
   "bugs": {
     "url": "https://github.com/markexin/node-bff/issues"
@@ -46,7 +46,11 @@
     "moment": "^2.29.2",
     "mongoose": "^6.2.8",
     "qs": "^6.10.3",
+    "ts-node": "^10.7.0",
     "winston": "^3.7.2",
     "ws": "^8.5.0"
+  },
+  "devDependencies": {
+    "node-fetch": "^3.2.4"
   }
 }
