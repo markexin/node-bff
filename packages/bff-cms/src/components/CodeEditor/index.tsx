@@ -48,7 +48,8 @@ export const Editor: FC<{
   const monacoEl = useRef(null);
 
   useEffect(() => {
-    if (monacoEl && !editor) {
+    console.log(monacoEl, editor);
+    if (monacoEl.current && !editor) {
       setEditor(
         monaco.editor.create(monacoEl.current!, {
           value: code,

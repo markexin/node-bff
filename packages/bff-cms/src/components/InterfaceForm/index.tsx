@@ -32,7 +32,6 @@ interface Rule {
 
 export default function InterfaceForm(params: {
   keyPrefix: string;
-  currentOpType?: 0 | 1;
   showFooter?: boolean;
   config?: DefaultConfigP[];
 }) {
@@ -90,6 +89,7 @@ export default function InterfaceForm(params: {
         setOriginList(res.data);
       });
     }
+    console.log(visible, '----');
   }, [visible]);
 
   function handleClose() {
@@ -125,9 +125,6 @@ export default function InterfaceForm(params: {
     <Form
       labelPosition='left'
       onSubmit={handleSubmit}
-      initValues={{
-        type: 0,
-      }}
       onChange={handleChange}
       className='interface-border'
       style={{

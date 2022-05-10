@@ -152,12 +152,13 @@ const proxyOtherConfig = [
 ];
 
 const InterfaceManagement: FC = () => {
+  const [viewControl, setViewControl] = useState<ViewControlType>('fetch');
   const dispatch = useAppDispatch();
   const tableData = useAppSelector((state) => state.interfaceSlice.list);
   const visible = useAppSelector((state) => state.interfaceSlice.visible);
   const currentOpType = useAppSelector((state) => state.interfaceSlice.type);
   const getTableList = () => dispatch(fetchInterface());
-  const [viewControl, setViewControl] = useState<ViewControlType>('fetch');
+
   // const { interfaceFormState, nginxState } = useAppSelector(
   //   (state) => state.nginxSlice,
   // );
@@ -192,11 +193,7 @@ const InterfaceManagement: FC = () => {
         <Row gutter={16}>
           <Col span={12}>
             <div className='col-content'>
-              <InterfaceForm
-                keyPrefix={'top'}
-                showFooter={true}
-                currentOpType={currentOpType}
-              />
+              <InterfaceForm keyPrefix={'top'} showFooter={true} />
               {viewControl === 'handler' && currentOpType === 1 ? (
                 <Editor
                   height={'52vh'}
@@ -204,28 +201,22 @@ const InterfaceManagement: FC = () => {
                   code={'module.export = function (context, next) {\n\n}'}
                   language={'javascript'}
                 />
-              ) : (
+              ) : null}
+              {currentOpType !== 1 ? (
                 <InterfaceForm
                   keyPrefix={'bottom'}
                   showFooter={false}
                   config={proxyOtherConfig}
                 />
-              )}
+              ) : viewControl !== 'handler' ? (
+                <PostTools height='59vh' className='interface-border' />
+              ) : null}
             </div>
           </Col>
           <Col span={12}>
             {currentOpType === 0 ? (
               <PostTools className='interface-border' />
             ) : (
-              // <Editor
-              //   title='Nginx配置可视化'
-              //   className='interface-border'
-              //   language={'nginx'}
-              //   code={parse({
-              //     ...interfaceFormState,
-              //     ...nginxState,
-              //   })}
-              // />
               <WorkFlow
                 onChange={handleTypeChange}
                 className='interface-border'

@@ -84,7 +84,8 @@ function useTabsController() {
 
 export const PostTools: FC<{
   className?: string;
-}> = ({ className }) => {
+  height?: string;
+}> = ({ className, height = '80vh' }) => {
   const { reqStatus, resStatus, reqDisplay, resDisplay, cb } =
     useTabsController();
   const [formData, setFormData] = useState<{
@@ -144,7 +145,7 @@ export const PostTools: FC<{
     },
   ];
   return (
-    <Form className={className} style={{ height: '80vh' }}>
+    <Form className={className} style={{ height }}>
       <Section text={'PostSuperMan'}>
         <Input
           value={formData?.apiName}
